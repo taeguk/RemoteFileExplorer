@@ -1,0 +1,301 @@
+//Microsoft Visual C++에서 생성한 리소스 스크립트입니다.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE 2 리소스에서 생성되었습니다.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+#ifdef APSTUDIO_INVOKED
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)\r\n"
+    "LANGUAGE 18, 1\r\n"
+    "#include ""res\\RemoteFileExplorer.rc2""  // Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스입니다.\r\n"
+    "#include ""l.KOR\\afxres.rc""      // 표준 구성 요소\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 아이콘
+//
+
+// 응용 프로그램 아이콘이 모든 시스템에서 일관된 상태를 유지하도록 하기 위해
+// 가장 낮은 ID 값을 갖는 아이콘이 맨 처음 배치됩니다.
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE 18, 1
+IDR_MAINFRAME           ICON         "res\\RemoteFileExplorer.ico"
+#endif
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE 18, 1
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 메뉴
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "파일(&F)"
+    BEGIN
+        MENUITEM "끝내기(&X)",                       ID_APP_EXIT
+    END
+    POPUP "편집(&E)"
+    BEGIN
+        MENUITEM "실행 취소(&U)\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "잘라내기(&T)\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "복사(&C)\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "붙여넣기(&P)\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "보기(&V)"
+    BEGIN
+        MENUITEM "상태 표시줄(&S)",                 ID_VIEW_STATUS_BAR
+        POPUP "응용 프로그램 모양(&A)"
+        BEGIN
+            MENUITEM "Windows 2000(&2)",           ID_VIEW_APPLOOK_WIN_2000
+            MENUITEM "Office XP(&X)",              ID_VIEW_APPLOOK_OFF_XP
+            MENUITEM "Windows XP(&W)",             ID_VIEW_APPLOOK_WIN_XP
+            MENUITEM "Office 2003(&3)",            ID_VIEW_APPLOOK_OFF_2003
+            MENUITEM "Visual Studio 200&5",     ID_VIEW_APPLOOK_VS_2005
+            MENUITEM "Visual Studio 200&8",     ID_VIEW_APPLOOK_VS_2008
+            POPUP "Office 2007(&7)"
+            BEGIN
+                MENUITEM "파랑 스타일(&B)",         ID_VIEW_APPLOOK_OFF_2007_BLUE
+                MENUITEM "검정 스타일(&L)",        ID_VIEW_APPLOOK_OFF_2007_BLACK
+                MENUITEM "은색 스타일(&S)",       ID_VIEW_APPLOOK_OFF_2007_SILVER
+                MENUITEM "바다색 스타일(&A)",         ID_VIEW_APPLOOK_OFF_2007_AQUA
+            END
+        END
+    END
+    POPUP "도움말(&H)"
+    BEGIN
+        MENUITEM "RemoteFileExplorer 정보(&A)...",          ID_APP_ABOUT
+    END
+END
+
+
+
+IDR_THEME_MENU MENU
+BEGIN
+    MENUITEM "Office 2007(파랑 스타일)(&B)",       ID_VIEW_APPLOOK_OFF_2007_BLUE
+    MENUITEM "Office 2007(검정 스타일)(&L)",      ID_VIEW_APPLOOK_OFF_2007_BLACK
+    MENUITEM "Office 2007(은색 스타일)(&S)",     ID_VIEW_APPLOOK_OFF_2007_SILVER
+    MENUITEM "Office 2007(바다색 스타일)(&A)",       ID_VIEW_APPLOOK_OFF_2007_AQUA
+    MENUITEM "Windows 7(&D)",                      ID_VIEW_APPLOOK_WINDOWS_7
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 액셀러레이터 키
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "C",            ID_EDIT_COPY,           VIRTKEY,CONTROL,NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY,CONTROL,NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY,ALT,NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY,SHIFT,NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY ,NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY,SHIFT,NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY,CONTROL,NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY,SHIFT,NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY,CONTROL,NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY,CONTROL,NOINVERT
+END
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 대화 상자
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "RemoteFileExplorer 정보"
+FONT 9, "MS Shell Dlg"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "RemoteFileExplorer, 버전 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2017",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "확인",IDOK,113,41,50,14,WS_GROUP
+END
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 버전
+//
+
+VS_VERSION_INFO     VERSIONINFO
+  FILEVERSION       1,0,0,1
+  PRODUCTVERSION    1,0,0,1
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS VOS_NT_WINDOWS32
+ FILETYPE VFT_APP
+ FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041204B0"
+        BEGIN
+            VALUE "CompanyName", "TODO: <회사 이름>"
+            VALUE "FileDescription", "RemoteFileExplorer"
+            VALUE "FileVersion",     "1.0.0.1"
+            VALUE "InternalName",    "RemoteFileExplorer.exe"
+            VALUE "LegalCopyright", "TODO: (c) <회사 이름>.  All rights reserved."
+            VALUE "OriginalFilename","RemoteFileExplorer.exe"
+            VALUE "ProductName", "TODO: <제품 이름>"
+            VALUE "ProductVersion",  "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0412, 1200
+    END
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 문자열 테이블
+//
+
+STRINGTABLE
+BEGIN
+// MAC을 대상으로 하지 않는 응용 프로그램에서는 두 개의 추가 부분 문자열을 제거합니다.
+    IDR_MAINFRAME           "RemoteFileExplorer"
+END
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "RemoteFileExplorer"
+    AFX_IDS_IDLEMESSAGE     "준비"
+END
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "프로그램 정보, 버전 번호 및 저작권을 표시합니다.\n정보"
+    ID_APP_EXIT             "문서를 저장할지를 묻고 응용 프로그램을 끝냅니다.\n끝내기"
+    ID_NEXT_PANE            "다음 창으로 전환합니다.\n다음 창"
+    ID_PREV_PANE            "이전 창으로 전환합니다.\n이전 창"
+    ID_WINDOW_SPLIT         "활성 창을 여러 개의 창으로 분할합니다.\n분할"
+    ID_EDIT_CLEAR           "선택 영역을 지웁니다.\n지우기"
+    ID_EDIT_CLEAR_ALL       "모두 지웁니다.\n모두 지우기"
+    ID_EDIT_COPY            "선택 영역을 복사하여 클립보드에 넣습니다.\n복사"
+    ID_EDIT_CUT             "선택 영역을 잘라내어 클립보드에 넣습니다.\n잘라내기"
+    ID_EDIT_FIND            "지정한 텍스트를 찾습니다.\n찾기"
+    ID_EDIT_PASTE           "클립보드 내용을 삽입합니다.\n붙여넣기"
+    ID_EDIT_REPEAT          "마지막 작업을 반복합니다.\n반복"
+    ID_EDIT_REPLACE         "특정 텍스트를 다른 텍스트로 바꿉니다.\n바꾸기"
+    ID_EDIT_SELECT_ALL      "전체 문서를 선택합니다.\n모두 선택"
+    ID_EDIT_UNDO            "마지막 작업 실행을 취소합니다.\n실행 취소"
+    ID_EDIT_REDO            "이전에 실행 취소된 작업을 다시 실행합니다.\n다시 실행"
+    ID_VIEW_STATUS_BAR      "상태 표시줄을 표시하거나 숨깁니다.\n상태 표시줄 설정/해제"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "창 크기를 변경합니다."
+    AFX_IDS_SCMOVE          "창 위치를 변경합니다."
+    AFX_IDS_SCMINIMIZE      "창을 아이콘으로 축소합니다."
+    AFX_IDS_SCMAXIMIZE      "창을 전체 화면 크기로 확대합니다."
+    AFX_IDS_SCNEXTWINDOW    "다음 문서 창으로 전환합니다."
+    AFX_IDS_SCPREVWINDOW    "이전 문서 창으로 전환합니다."
+    AFX_IDS_SCCLOSE         "문서를 저장할 것인지 확인하고 활성 창을 닫습니다."
+    AFX_IDS_SCRESTORE       "창을 보통 크기로 복원합니다."
+    AFX_IDS_SCTASKLIST      "작업 목록을 활성화합니다."
+END
+
+
+#endif
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE 3 리소스에서 생성되었습니다.
+//
+
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE 18, 1
+#include "res\\RemoteFileExplorer.rc2"  // Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스입니다.
+#include "l.KOR\\afxres.rc"      // 표준 구성 요소입니다.
+#endif
+#endif    // APSTUDIO_INVOKED가 아님
