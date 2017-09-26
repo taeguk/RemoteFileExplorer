@@ -5,8 +5,8 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
-#include "RemoteFileExplorer.h"
-#include "MainFrame.h"
+#include "CRemoteFileExplorerApp.h"
+#include "CMainFrame.h"
 
 
 #ifdef _DEBUG
