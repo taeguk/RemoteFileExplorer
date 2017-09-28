@@ -2,12 +2,16 @@
 // RemoteFileExplorer.cpp : 응용 프로그램에 대한 클래스 동작을 정의합니다.
 //
 
-#include "stdafx.h"
+#include "MFC/stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
-#include "RemoteFileExplorer.h"
-#include "MainFrame.h"
+#include "MFC/CRemoteFileExplorerApp.h"
+#include "MFC/CMainFrame.h"
 
+namespace remoteFileExplorer
+{
+namespace mfc
+{
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -150,5 +154,5 @@ void CRemoteFileExplorerApp::OnAppAbout()
 
 // CRemoteFileExplorerApp 메시지 처리기
 
-
-
+} // namespace mfc
+} // namespace remoteFileExplorer

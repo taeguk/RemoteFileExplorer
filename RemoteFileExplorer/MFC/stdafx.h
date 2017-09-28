@@ -9,7 +9,7 @@
 #define VC_EXTRALEAN            // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 #endif
 
-#include "targetver.h"
+#include "MFC/targetver.h"
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 일부 CString 생성자는 명시적으로 선언됩니다.
 
@@ -31,6 +31,9 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <afxcontrolbars.h>     // MFC의 리본 및 컨트롤 막대 지원
+
+// Added by taeguk.
+#define AFX_DESIGN_TIME
 
 
 

@@ -2,10 +2,15 @@
 // MainFrame.cpp : CMainFrame 클래스의 구현
 //
 
-#include "stdafx.h"
-#include "RemoteFileExplorer.h"
+#include "MFC/stdafx.h"
+#include "MFC/CRemoteFileExplorerApp.h"
 
-#include "MainFrame.h"
+#include "MFC/CMainFrame.h"
+
+namespace remoteFileExplorer
+{
+namespace mfc
+{
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,19 +51,24 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
         return -1;
 
-    // 프레임의 클라이언트 영역을 차지하는 뷰를 만듭니다.
-    if (!m_wndView.Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, NULL))
-    {
-        TRACE0("뷰 창을 만들지 못했습니다.\n");
-        return -1;
-    }
-
-    if (!m_wndStatusBar.Create(this))
+    if (!statusBar_.Create(this))
     {
         TRACE0("상태 표시줄을 만들지 못했습니다.\n");
         return -1;      // 만들지 못했습니다.
     }
-    m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
+    statusBar_.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
+
+	CCreateContext ccx;
+	ccx.m_pNewViewClass = RUNTIME_CLASS(CMainView);
+
+	mainView_ = DYNAMIC_DOWNCAST(CMainView, CreateView(&ccx));
+
+	mainView_->ShowWindow(SW_SHOW);
+	mainView_->OnInitialUpdate();
+
+	SetActiveView(mainView_);
+
+	mainView_->ResizeParentToFit(TRUE);
 
     return 0;
 }
@@ -68,7 +78,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
     if (!CFrameWnd::PreCreateWindow(cs))
         return FALSE;
     // TODO: CREATESTRUCT cs를 수정하여 여기에서
-    //  Window 클래스 또는 스타일을 수정합니다.
+    //  Window 클래스 또는 스타일을 수정합니다.`
 
     cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
     cs.lpszClass = AfxRegisterWndClass(0);
@@ -95,13 +105,13 @@ void CMainFrame::Dump(CDumpContext& dc) const
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
     // 뷰 창으로 포커스를 이동합니다.
-    m_wndView.SetFocus();
+    mainView_->SetFocus();
 }
 
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
     // 뷰에서 첫째 크랙이 해당 명령에 나타나도록 합니다.
-    if (m_wndView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+    if (mainView_->OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
         return TRUE;
 
     // 그렇지 않으면 기본 처리합니다.
@@ -182,3 +192,5 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
     pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
 }
 
+} // namespace mfc
+} // namespace remoteFileExplorer

@@ -3,7 +3,12 @@
 //
 
 #pragma once
-#include "MainView.h"
+#include "MFC/CMainView.h"
+
+namespace remoteFileExplorer
+{
+namespace mfc
+{
 
 class CMainFrame : public CFrameWnd
 {
@@ -33,8 +38,8 @@ public:
 #endif
 
 protected:  // 컨트롤 모음이 포함된 멤버입니다.
-    CStatusBar        m_wndStatusBar;
-    CMainView    m_wndView;
+    CStatusBar statusBar_;
+    CMainView* mainView_;
 
     // 생성된 메시지 맵 함수
 protected:
@@ -46,4 +51,5 @@ protected:
 
 };
 
-
+} // namespace mfc
+} // namespace remoteFileExplorer
