@@ -1,11 +1,14 @@
 #include "Server/Server.h"
-#include "Server/ClientPacketHandler.h"
-#include "Utils/Utils.h"
+
 #include <winsock2.h>
+
 #include <thread>
 #include <map>
 #include <vector>
 #include <atomic>
+
+#include "Server/ClientPacketHandler.h"
+#include "Utils/Utils.h"
 
 #pragma comment(lib,"ws2_32.lib")
 

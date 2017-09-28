@@ -1,8 +1,10 @@
 #pragma once
 
 #include <winsock2.h>
+
 #include <memory>
 #include <mutex>
+
 #include "Common/FileExplorerInterface.h"
 
 #pragma comment(lib,"ws2_32.lib")

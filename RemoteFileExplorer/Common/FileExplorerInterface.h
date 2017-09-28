@@ -1,7 +1,6 @@
 // TODO: #ifndef 식으로 바꾸기 (다른곳도)
 #pragma once
 
-// TODO: 헤더파일 순서 규약에 맞게 바꾸기 (다른곳도)
 #include <string>
 
 namespace remoteFileExplorer

@@ -1,11 +1,12 @@
 #pragma once
 
+#include <afxwin.h>
+#include <afxcmn.h>
+#include <afxbutton.h>
+
 #include "MFC/resource.h"
-#include "Server/Server.h"
 #include "MFC/Server/FileExplorerWatcher.h"
-#include "afxbutton.h"
-#include "afxwin.h"
-#include "afxcmn.h"
+#include "Server/Server.h"
 
 namespace remoteFileExplorer
 {

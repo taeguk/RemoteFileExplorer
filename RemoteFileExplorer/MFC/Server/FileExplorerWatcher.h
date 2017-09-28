@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Server/FileExplorerWatcherInterface.h"
 #include <windows.h>
+
+#include "Server/FileExplorerWatcherInterface.h"
 
 namespace remoteFileExplorer
 {

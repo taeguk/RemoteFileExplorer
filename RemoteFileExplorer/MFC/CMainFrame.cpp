@@ -3,9 +3,10 @@
 //
 
 #include "MFC/stdafx.h"
-#include "MFC/CRemoteFileExplorerApp.h"
 
 #include "MFC/CMainFrame.h"
+
+#include "MFC/CRemoteFileExplorerApp.h"
 
 namespace remoteFileExplorer
 {

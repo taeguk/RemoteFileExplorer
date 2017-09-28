@@ -1,8 +1,10 @@
 #pragma once
 
 #include <winsock2.h>
+
 #include <memory>
 #include <vector>
+
 #include "Server/FileExplorerServiceInterface.h"
 
 namespace remoteFileExplorer

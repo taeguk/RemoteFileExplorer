@@ -199,7 +199,6 @@
     <ClInclude Include="MFC\Server\FileExplorerWatcher.h" />
     <ClInclude Include="MFC\stdafx.h" />
     <ClInclude Include="MFC\targetver.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Server\ClientSession.h" />
     <ClInclude Include="Server\FileExplorerService.h" />
     <ClInclude Include="Server\FileExplorerServiceInterface.h" />

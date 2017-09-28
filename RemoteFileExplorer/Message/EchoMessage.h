@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Message/Message.h"
 #include <string>
+
+#include "Message/Message.h"
 
 namespace remoteFileExplorer
 {

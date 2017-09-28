@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ClientSession.h"
+#include "Server/ClientSession.h"
 #include "Message/Message.h"
 
 namespace remoteFileExplorer

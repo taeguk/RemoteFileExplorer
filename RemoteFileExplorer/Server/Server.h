@@ -1,14 +1,14 @@
 #pragma once
 
-#include <mutex>
-
-// remove later
-#include <atomic>
 #include <winsock2.h>
+
+#include <mutex>
+#include <atomic>
 #include <map>
 #include <vector>
 #include <thread>
 #include <vector>
+
 #include "Server/ClientSession.h"
 #include "Server/FileExplorerServiceInterface.h"
 

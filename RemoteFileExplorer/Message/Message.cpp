@@ -1,5 +1,6 @@
-#include "Message.h"
-#include "EchoMessage.h"
+#include "Message/Message.h"
+
+#include "Message/EchoMessage.h"
 
 namespace remoteFileExplorer
 {

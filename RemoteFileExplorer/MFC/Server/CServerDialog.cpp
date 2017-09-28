@@ -2,9 +2,12 @@
 //
 
 #include "MFC/stdafx.h"
+
 #include "MFC/Server/CServerDialog.h"
+
+#include <afxdialogex.h>
+
 #include "Server/FileExplorerService.h"
-#include "afxdialogex.h"
 
 namespace remoteFileExplorer
 {

@@ -1,9 +1,10 @@
 // CMainView.cpp : 구현 파일입니다.
 //
-
 #include "MFC/stdafx.h"
-#include "MFC/resource.h"
+
 #include "MFC/CMainView.h"
+
+#include "MFC/resource.h"
 
 namespace remoteFileExplorer
 {

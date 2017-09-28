@@ -1,4 +1,5 @@
 #include "FileExplorerWatcher.h"
+
 #include <string>
 
 namespace remoteFileExplorer

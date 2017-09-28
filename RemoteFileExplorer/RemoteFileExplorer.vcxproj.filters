@@ -111,9 +111,6 @@
     <ClInclude Include="MFC\targetver.h">
       <Filter>헤더 파일\MFC</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Server\FileExplorerWatcherInterface.h">
       <Filter>헤더 파일\Server</Filter>
     </ClInclude>

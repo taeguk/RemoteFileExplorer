@@ -1,5 +1,7 @@
 #pragma once
-#include "afxwin.h"
+
+#include <afxwin.h>
+
 #include "MFC/Server/CServerDialog.h"
 #include "MFC/Client/CClientDialog.h"
 
