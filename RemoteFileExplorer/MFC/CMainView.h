@@ -1,8 +1,12 @@
 #pragma once
 #include "afxwin.h"
-#include "CServerDialog.h"
-#include "CClientDialog.h"
+#include "MFC/Server/CServerDialog.h"
+#include "MFC/Client/CClientDialog.h"
 
+namespace remoteFileExplorer
+{
+namespace mfc
+{
 
 // CMainView Æû ºäÀÔ´Ï´Ù.
 
@@ -40,8 +44,8 @@ protected:
 private:
 	CButton serverButton_;
 	CButton clientButton_;
-	CServerDialog serverDialog_;
-	CClientDialog clientDialog_;
+	server::CServerDialog serverDialog_;
+	client::CClientDialog clientDialog_;
 	ProgramMode programMode_{ ProgramMode::MainMode };
 
 public:
@@ -50,4 +54,5 @@ public:
 	afx_msg void OnBnClickedButtonClient();
 };
 
-
+} // namespace mfc
+} // namespace remoteFileExplorer

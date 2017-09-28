@@ -13,60 +13,163 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\Common">
+      <UniqueIdentifier>{09c1dea6-f802-4dc0-aa0a-32cc49b574ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Client">
+      <UniqueIdentifier>{ba8b12dd-24bd-428c-b176-61646246f615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Server">
+      <UniqueIdentifier>{9c14c503-5e35-4c9a-baee-9700128bccb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Message">
+      <UniqueIdentifier>{d05a07b0-9383-4fbc-a997-320f698cf555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utils">
+      <UniqueIdentifier>{b6bc636c-3c8b-41dd-9b69-bce825634465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\MFC">
+      <UniqueIdentifier>{2987c64d-0e7e-41bf-b1c1-6b0126a5e435}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\MFC\Client">
+      <UniqueIdentifier>{2c0d1649-58be-4f79-aaa6-94871a6ba6ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\MFC\Server">
+      <UniqueIdentifier>{cf50a186-7bde-4b40-af02-dab118c6e5e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\MFC">
+      <UniqueIdentifier>{e38860d2-2a67-40cd-8d49-866995d4eec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\MFC\Client">
+      <UniqueIdentifier>{d7e7e680-914a-4f50-a979-b3ef03b7ab76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\MFC\Server">
+      <UniqueIdentifier>{8c725294-9cd3-48bb-a25a-1e575ba2866c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Server">
+      <UniqueIdentifier>{a1579f37-62ac-4c32-aee0-c77f7b3a6513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Message">
+      <UniqueIdentifier>{dc84a80b-d6a4-4b5d-b020-a569ea460a51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Client">
+      <UniqueIdentifier>{a82e9ab1-6a9a-4d92-a4ef-be52266f4d61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="Server\ClientSession.h">
+      <Filter>헤더 파일\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Server.h">
+      <Filter>헤더 파일\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Message\EchoMessage.h">
+      <Filter>헤더 파일\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="Message\Message.h">
+      <Filter>헤더 파일\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="Client\RemoteFileExplorer.h">
+      <Filter>헤더 파일\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\FileExplorerInterface.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Utils.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\ClientPacketHandler.h">
+      <Filter>헤더 파일\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Client\ServerConnector.h">
+      <Filter>헤더 파일\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\Client\CClientDialog.h">
+      <Filter>헤더 파일\MFC\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\Server\CServerDialog.h">
+      <Filter>헤더 파일\MFC\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\CMainFrame.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\CMainView.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\CRemoteFileExplorerApp.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\resource.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\stdafx.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="MFC\targetver.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Server\FileExplorerWatcherInterface.h">
+      <Filter>헤더 파일\Server</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="MFC\Server\FileExplorerWatcher.h">
+      <Filter>헤더 파일\MFC\Server</Filter>
     </ClInclude>
-    <ClInclude Include="CMainFrame.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Server\FileExplorerServiceInterface.h">
+      <Filter>헤더 파일\Server</Filter>
     </ClInclude>
-    <ClInclude Include="CRemoteFileExplorerApp.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CMainView.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CServerDialog.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CClientDialog.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Server\FileExplorerService.h">
+      <Filter>헤더 파일\Server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Server\Server.cpp">
+      <Filter>소스 파일\Server</Filter>
     </ClCompile>
-    <ClCompile Include="CRemoteFileExplorerApp.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Server\ClientPacketHandler.cpp">
+      <Filter>소스 파일\Server</Filter>
     </ClCompile>
-    <ClCompile Include="CMainFrame.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Message\Message.cpp">
+      <Filter>소스 파일\Message</Filter>
     </ClCompile>
-    <ClCompile Include="CMainView.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Message\EchoMessage.cpp">
+      <Filter>소스 파일\Message</Filter>
     </ClCompile>
-    <ClCompile Include="CServerDialog.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Client\ServerConnector.cpp">
+      <Filter>소스 파일\Client</Filter>
     </ClCompile>
-    <ClCompile Include="CClientDialog.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Client\RemoteFileExplorer.cpp">
+      <Filter>소스 파일\Client</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="RemoteFileExplorer.rc">
-      <Filter>리소스 파일</Filter>
-    </ResourceCompile>
+    <ClCompile Include="MFC\Client\CClientDialog.cpp">
+      <Filter>소스 파일\MFC\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="MFC\Server\CServerDialog.cpp">
+      <Filter>소스 파일\MFC\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="MFC\CMainFrame.cpp">
+      <Filter>소스 파일\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="MFC\CMainView.cpp">
+      <Filter>소스 파일\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="MFC\CRemoteFileExplorerApp.cpp">
+      <Filter>소스 파일\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="MFC\stdafx.cpp">
+      <Filter>소스 파일\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="MFC\Server\FileExplorerWatcher.cpp">
+      <Filter>소스 파일\MFC\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\FileExplorerService.cpp">
+      <Filter>소스 파일\Server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\RemoteFileExplorer.rc2">
@@ -74,8 +177,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\RemoteFileExplorer.ico">
+    <Image Include="MFC\res\RemoteFileExplorer.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MFC\RemoteFileExplorer.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

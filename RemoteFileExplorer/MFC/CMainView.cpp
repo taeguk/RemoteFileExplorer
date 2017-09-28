@@ -1,10 +1,14 @@
 // CMainView.cpp : 구현 파일입니다.
 //
 
-#include "stdafx.h"
-#include "resource.h"
-#include "CMainView.h"
+#include "MFC/stdafx.h"
+#include "MFC/resource.h"
+#include "MFC/CMainView.h"
 
+namespace remoteFileExplorer
+{
+namespace mfc
+{
 
 // CMainView
 
@@ -84,7 +88,7 @@ void CMainView::OnBnClickedButtonServer()
 	serverButton_.ShowWindow(SW_HIDE);
 	clientButton_.ShowWindow(SW_HIDE);
 
-	serverDialog_.Create(CServerDialog::IDD, this);
+	serverDialog_.Create(server::CServerDialog::IDD, this);
 	serverDialog_.ShowWindow(SW_SHOW);
 	serverDialog_.MoveWindow(&clientRect);
 	serverDialog_.SetFocus();
@@ -101,10 +105,13 @@ void CMainView::OnBnClickedButtonClient()
 	serverButton_.ShowWindow(SW_HIDE);
 	clientButton_.ShowWindow(SW_HIDE);
 
-	clientDialog_.Create(CClientDialog::IDD, this);
+	clientDialog_.Create(client::CClientDialog::IDD, this);
 	clientDialog_.ShowWindow(SW_SHOW);
 	clientDialog_.MoveWindow(&clientRect);
 	clientDialog_.SetFocus();
 
 	programMode_ = ProgramMode::ClientMode;
 }
+
+} // namespace mfc
+} // namespace remoteFileExplorer

@@ -27,12 +27,17 @@
 #define IDC_EDIT_LISTEN_PORT            1001
 #define IDC_MFCBUTTON_SERVER_CONTROL    1007
 #define IDC_LIST3                       1012
+#define IDC_LIST_SERVER_LOG             1012
 #define IDC_STATIC_LISTEN_PORT          1013
 #define IDC_IPADDRESS1                  1015
+#define IDC_IPADDRESS_REMOTE_IP         1015
 #define IDC_EDIT1                       1016
+#define IDC_EDIT_REMOTE_PORT            1016
 #define IDC_MFCBUTTON_CLIENT_CONTROL    1017
 #define IDC_EDIT2                       1018
+#define IDC_EDIT_ECHO_STRING            1018
 #define IDC_LIST1                       1019
+#define IDC_LIST_ECHO_RESULT            1019
 #define IDC_MFCBUTTON_CLIENT_ECHO       1021
 
 // Next default values for new objects

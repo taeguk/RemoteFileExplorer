@@ -2,10 +2,15 @@
 // MainFrame.cpp : CMainFrame 클래스의 구현
 //
 
-#include "stdafx.h"
-#include "CRemoteFileExplorerApp.h"
+#include "MFC/stdafx.h"
+#include "MFC/CRemoteFileExplorerApp.h"
 
-#include "CMainFrame.h"
+#include "MFC/CMainFrame.h"
+
+namespace remoteFileExplorer
+{
+namespace mfc
+{
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -187,3 +192,5 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
     pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
 }
 
+} // namespace mfc
+} // namespace remoteFileExplorer

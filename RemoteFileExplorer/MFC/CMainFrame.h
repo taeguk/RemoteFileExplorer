@@ -3,7 +3,12 @@
 //
 
 #pragma once
-#include "CMainView.h"
+#include "MFC/CMainView.h"
+
+namespace remoteFileExplorer
+{
+namespace mfc
+{
 
 class CMainFrame : public CFrameWnd
 {
@@ -46,4 +51,5 @@ protected:
 
 };
 
-
+} // namespace mfc
+} // namespace remoteFileExplorer
