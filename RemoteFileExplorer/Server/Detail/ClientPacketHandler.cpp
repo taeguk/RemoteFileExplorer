@@ -1,10 +1,12 @@
-#include "Server/ClientPacketHandler.h"
+#include "Server/Detail/ClientPacketHandler.h"
 
 #include "Message/EchoMessage.h"
 
 namespace remoteFileExplorer
 {
 namespace server
+{
+namespace detail
 {
 ///////////////////////////////////////////////////////////////////////////////
 int HandleClientPacket(
@@ -37,8 +39,6 @@ int HandleClientPacket(
 	return 0;
 }
 
-namespace detail
-{
 ///////////////////////////////////////////////////////////////////////////////
 int HandleClientMessage(
 	ClientSession& session,
@@ -66,7 +66,7 @@ int HandleClientMessage(
 
 	return 0;
 }
-} // namespace detail
 
+} // namespace detail
 } // namespace server
 } // namespace remoteFileExplorer

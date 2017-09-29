@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Client/ServerConnector.h"
+#include "Client/Detail/ServerConnector.h"
 #include "Common/FileExplorerInterface.h"
 #include "Message/EchoMessage.h"
 
@@ -22,7 +22,7 @@ public:
 	virtual std::string Echo(const char* str) override;
 
 private:
-	ServerConnector serverConnector_;
+	detail::ServerConnector serverConnector_; // TODO: 헤더파일에서 detail 의존성 걷어내기.
 };
 
 } // namespace client

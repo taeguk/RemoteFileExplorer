@@ -11,6 +11,8 @@ namespace remoteFileExplorer
 {
 namespace server
 {
+namespace detail
+{
 ///////////////////////////////////////////////////////////////////////////////
 class ClientSession final
 {
@@ -42,5 +44,6 @@ inline ClientSession::ClientSession(
 {
 }
 
+} // namespace detail
 } // namespace server
 } // namespace remoteFileExplorer

@@ -1,8 +1,10 @@
-#include "Client/ServerConnector.h"
+#include "Client/Detail/ServerConnector.h"
 
 namespace remoteFileExplorer
 {
 namespace client
+{
+namespace detail
 {
 ///////////////////////////////////////////////////////////////////////////////
 ServerConnector::~ServerConnector()
@@ -100,5 +102,6 @@ int ServerConnector::Communicate(
 	return 0;
 }
 
+} // namespace detail
 } // namespace client
 } // namespace remoteFileExplorer

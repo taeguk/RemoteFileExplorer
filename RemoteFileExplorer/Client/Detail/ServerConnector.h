@@ -7,11 +7,11 @@
 
 #include "Common/FileExplorerInterface.h"
 
-#pragma comment(lib,"ws2_32.lib")
-
 namespace remoteFileExplorer
 {
 namespace client
+{
+namespace detail
 {
 ///////////////////////////////////////////////////////////////////////////////
 class ServerConnector final
@@ -31,5 +31,6 @@ private:
 	bool connected_{ false };
 };
 
+} // namespace detail
 } // namespace client
 } // namespace remoteFileExplorer
