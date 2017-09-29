@@ -21,7 +21,7 @@ public:
 	virtual std::string Echo(const char* str) override;
 
 private:
-	std::shared_ptr<FileExplorerWatcherInterface> watcher_;
+	std::shared_ptr<FileExplorerWatcherInterface> watcher_;  // TODO: 검토...(shared_ptr관련)
 };
 
 /*****************************************************************************/

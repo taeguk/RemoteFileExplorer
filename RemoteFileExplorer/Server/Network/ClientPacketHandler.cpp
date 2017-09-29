@@ -1,4 +1,4 @@
-#include "Server/Detail/ClientPacketHandler.h"
+#include "Server/Network/ClientPacketHandler.h"
 
 #include "Message/EchoMessage.h"
 
@@ -6,7 +6,7 @@ namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 int HandleClientPacket(
@@ -29,7 +29,7 @@ int HandleClientPacket(
 
 	std::unique_ptr<message::ServerMessage> serverMessage = nullptr;
 
-	if (detail::HandleClientMessage(session, clientMessage, serverMessage) != 0)
+	if (network::HandleClientMessage(session, clientMessage, serverMessage) != 0)
 		return -1;
 
 	*bufferSize = maxBufferSize;
@@ -67,6 +67,6 @@ int HandleClientMessage(
 	return 0;
 }
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

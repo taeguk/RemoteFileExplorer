@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Server/Detail/ClientSession.h"
+#include "Server/Network/ClientSession.h"
 #include "Message/Message.h"
 
 namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 int HandleClientPacket(
@@ -22,6 +22,6 @@ int HandleClientMessage(
 	message::ClientMessage& clientMessage,
 	std::unique_ptr<message::ServerMessage>& serverMessage);
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

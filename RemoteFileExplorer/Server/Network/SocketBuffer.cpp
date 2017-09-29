@@ -1,10 +1,10 @@
-#include "Server/Detail/SocketBuffer.h"
+#include "Server/Network/SocketBuffer.h"
 
 namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 /*static*/ SocketBuffer* SocketBuffer::AcquireBuffer()
@@ -30,6 +30,6 @@ void SocketBuffer::Reset()
 	wsabuf.len = 1024;
 }
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

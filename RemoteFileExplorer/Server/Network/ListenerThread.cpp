@@ -1,12 +1,12 @@
-#include "Server/Detail/ListenerThread.h"
+#include "Server/Network/ListenerThread.h"
 
-#include "Server/Detail/SocketBuffer.h"
+#include "Server/Network/SocketBuffer.h"
 
 namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 ListenerThread::ListenerThread(
@@ -154,6 +154,6 @@ int ListenerThread::DestroyClientSession(SOCKET hSocket)
 	return 0;
 }
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

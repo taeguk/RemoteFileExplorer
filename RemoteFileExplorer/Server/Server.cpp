@@ -7,7 +7,7 @@
 #include <vector>
 #include <atomic>
 
-#include "Server/Detail/ListenerThread.h"
+#include "Server/Network/ListenerThread.h"
 #include "Utils/Utils.h"
 
 // TODO: 이거 어떻게 하지???
@@ -17,15 +17,6 @@ namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
-{
-///////////////////////////////////////////////////////////////////////////////
-void ListenerThreadDeleter::operator() (ListenerThread* ptr) const
-{
-	delete ptr;
-}
-} // namespace detail
-
 ///////////////////////////////////////////////////////////////////////////////
 Server::~Server()
 {
@@ -51,7 +42,7 @@ int Server::Start(std::uint16_t port, std::size_t threadNumber /* 0 means defaul
 		threadNumber = systemInfo.dwNumberOfProcessors * 3;
 	}
 
-	listenerThread_.reset(new detail::ListenerThread(
+	listenerThread_.reset(new network::ListenerThread(
 		port, threadNumber,fileExplorerService_->Clone()));
 
 	started_ = true;

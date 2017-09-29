@@ -55,17 +55,17 @@
     <Filter Include="소스 파일\Client">
       <UniqueIdentifier>{a82e9ab1-6a9a-4d92-a4ef-be52266f4d61}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Server\Detail">
-      <UniqueIdentifier>{d661e2fe-f9ed-4be8-89b1-6295ed9074df}</UniqueIdentifier>
+    <Filter Include="소스 파일\Client\Network">
+      <UniqueIdentifier>{7ea0cb94-ea31-4fc5-b105-05ce7230b41f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Server\Detail">
-      <UniqueIdentifier>{b7a2679a-b2f8-4d70-910b-7f318521cbd1}</UniqueIdentifier>
+    <Filter Include="소스 파일\Server\Network">
+      <UniqueIdentifier>{93c0c7db-4702-4f93-81df-d352f163496d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Client\Detail">
-      <UniqueIdentifier>{0ae910f2-0be0-40c3-8a8c-ec56649ed4e7}</UniqueIdentifier>
+    <Filter Include="헤더 파일\Client\Network">
+      <UniqueIdentifier>{84597a15-8a50-4954-bd2a-00bc7f61347e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Client\Detail">
-      <UniqueIdentifier>{956f1134-3d5c-433a-a6be-5777b0b3efda}</UniqueIdentifier>
+    <Filter Include="헤더 파일\Server\Network">
+      <UniqueIdentifier>{9ffa2e31-5056-4a1c-a92b-9d34bb3db5d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,23 +126,23 @@
     <ClInclude Include="Server\FileExplorerService.h">
       <Filter>헤더 파일\Server</Filter>
     </ClInclude>
-    <ClInclude Include="Server\Detail\ListenerThread.h">
-      <Filter>헤더 파일\Server\Detail</Filter>
+    <ClInclude Include="Client\Network\ServerConnector.h">
+      <Filter>헤더 파일\Client\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Server\Detail\ClientHandlerThread.h">
-      <Filter>헤더 파일\Server\Detail</Filter>
+    <ClInclude Include="Server\Network\ClientHandlerThread.h">
+      <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Server\Detail\SocketBuffer.h">
-      <Filter>헤더 파일\Server\Detail</Filter>
+    <ClInclude Include="Server\Network\ClientPacketHandler.h">
+      <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Server\Detail\ClientPacketHandler.h">
-      <Filter>헤더 파일\Server\Detail</Filter>
+    <ClInclude Include="Server\Network\ClientSession.h">
+      <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Server\Detail\ClientSession.h">
-      <Filter>헤더 파일\Server\Detail</Filter>
+    <ClInclude Include="Server\Network\ListenerThread.h">
+      <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Client\Detail\ServerConnector.h">
-      <Filter>헤더 파일\Client\Detail</Filter>
+    <ClInclude Include="Server\Network\SocketBuffer.h">
+      <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -182,20 +182,20 @@
     <ClCompile Include="Server\FileExplorerService.cpp">
       <Filter>소스 파일\Server</Filter>
     </ClCompile>
-    <ClCompile Include="Server\Detail\SocketBuffer.cpp">
-      <Filter>소스 파일\Server\Detail</Filter>
+    <ClCompile Include="Client\Network\ServerConnector.cpp">
+      <Filter>소스 파일\Client\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Server\Detail\ClientHandlerThread.cpp">
-      <Filter>소스 파일\Server\Detail</Filter>
+    <ClCompile Include="Server\Network\SocketBuffer.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Server\Detail\ListenerThread.cpp">
-      <Filter>소스 파일\Server\Detail</Filter>
+    <ClCompile Include="Server\Network\ListenerThread.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Server\Detail\ClientPacketHandler.cpp">
-      <Filter>소스 파일\Server\Detail</Filter>
+    <ClCompile Include="Server\Network\ClientPacketHandler.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Client\Detail\ServerConnector.cpp">
-      <Filter>소스 파일\Client\Detail</Filter>
+    <ClCompile Include="Server\Network\ClientHandlerThread.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

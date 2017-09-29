@@ -11,7 +11,7 @@ namespace remoteFileExplorer
 {
 namespace client
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 class ServerConnector final
@@ -31,6 +31,6 @@ private:
 	bool connected_{ false };
 };
 
-} // namespace detail
+} // namespace network
 } // namespace client
 } // namespace remoteFileExplorer

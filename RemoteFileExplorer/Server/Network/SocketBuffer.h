@@ -9,7 +9,7 @@ namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 struct SocketBuffer final
@@ -26,6 +26,6 @@ struct SocketBuffer final
 	WSABUF wsabuf;
 };
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

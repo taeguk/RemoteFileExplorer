@@ -9,14 +9,14 @@
 #include <thread>
 
 #include "Server/FileExplorerServiceInterface.h"
-#include "Server/Detail/ClientSession.h"
-#include "Server/Detail/ClientHandlerThread.h"
+#include "Server/Network/ClientSession.h"
+#include "Server/Network/ClientHandlerThread.h"
 
 namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 class ListenerThread final
@@ -52,6 +52,6 @@ private:
 	std::thread listenerThread_;  // 무조건 맨 마지막에 와야함. (소멸순서 때문에)
 };
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

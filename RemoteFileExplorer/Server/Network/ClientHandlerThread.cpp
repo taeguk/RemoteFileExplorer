@@ -1,13 +1,13 @@
-#include "Server/Detail/ClientHandlerThread.h"
+#include "Server/Network/ClientHandlerThread.h"
 
-#include "Server/Detail/ClientPacketHandler.h"
-#include "Server/Detail/SocketBuffer.h"
+#include "Server/Network/ClientPacketHandler.h"
+#include "Server/Network/SocketBuffer.h"
 
 namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 ClientHandlerThread::ClientHandlerThread(
@@ -87,6 +87,6 @@ int ClientHandlerThread::ThreadMain_()
 	return false;
 }
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

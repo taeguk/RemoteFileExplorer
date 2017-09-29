@@ -6,13 +6,13 @@
 #include <atomic>
 #include <thread>
 
-#include "Server/Detail/ClientSession.h"
+#include "Server/Network/ClientSession.h"
 
 namespace remoteFileExplorer
 {
 namespace server
 {
-namespace detail
+namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
 class ClientHandlerThread final
@@ -38,6 +38,6 @@ private:
 	std::thread thread_;  // 무조건 맨 마지막에 와야함. (소멸순서 때문에)
 };
 
-} // namespace detail
+} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

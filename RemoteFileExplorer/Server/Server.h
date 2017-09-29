@@ -5,21 +5,12 @@
 #include <memory>
 
 #include "Server/FileExplorerServiceInterface.h"
+#include "Server/Network/ListenerThread.h"
 
 namespace remoteFileExplorer
 {
 namespace server
 {
-// ListenerThread의 정의부 없이 std::unique_ptr<T>을 사용하기 위한 전방 선언.
-namespace detail
-{
-	class ListenerThread;
-	struct ListenerThreadDeleter
-	{
-		void operator() (ListenerThread* ptr) const;
-	};
-} // namespace detail
-
 ///////////////////////////////////////////////////////////////////////////////
 class Server final
 {
@@ -40,8 +31,7 @@ private:
 	std::mutex mutex_;
 	std::atomic<bool> started_{ false };
 	std::unique_ptr<FileExplorerServiceInterface> fileExplorerService_;
-	std::unique_ptr<detail::ListenerThread, detail::ListenerThreadDeleter>
-		listenerThread_{ nullptr };
+	std::unique_ptr<network::ListenerThread> listenerThread_;
 };
 
 /*****************************************************************************/
