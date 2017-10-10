@@ -4,7 +4,6 @@
 
 #include "Client/Network/ServerConnector.h"
 #include "Common/FileExplorerInterface.h"
-#include "Message/EchoMessage.h"
 
 namespace remoteFileExplorer
 {
@@ -19,7 +18,10 @@ public:
 	int Disconnect();
 
 	// 동기적으로(blocking으로) 수행.
-	virtual std::string Echo(const char* str) override;
+	virtual int GetLogicalDriveInfo(
+		std::vector<common::LogicalDrive>& drives) override;
+	virtual int GetDirectoryInfo(
+		const std::wstring& path, common::Directory& dir) override;
 
 private:
 	network::ServerConnector serverConnector_;

@@ -111,6 +111,7 @@ void CClientDialog::OnBnClickedMfcbuttonClientEcho()
 	CString cstr;
 	echoStringEdit_.GetWindowTextW(cstr);
 
+	// TODO: 이 부분 blocking되지 않게 UI thread랑 별개적으로 실행되게 하기.
 	std::string result =
 		remoteFileExplorer_.Echo(static_cast<CStringA>(cstr).GetString());
 

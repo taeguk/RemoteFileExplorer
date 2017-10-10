@@ -1,20 +1,24 @@
 // TODO: #ifndef 식으로 바꾸기 (다른곳도)
 #pragma once
 
+#include <ctime>
 #include <string>
+#include <vector>
+
+#include "Common/FileSystem.h"
 
 namespace remoteFileExplorer
 {
 namespace common
 {
-
+///////////////////////////////////////////////////////////////////////////////
 class FileExplorerInterface
 {
 public:
 	virtual ~FileExplorerInterface() = default;
 
-	// 테스트용도.
-	virtual std::string Echo(const char* str) = 0;
+	virtual int GetLogicalDriveInfo(std::vector<LogicalDrive>& drives) = 0;
+	virtual int GetDirectoryInfo(const std::wstring& path, Directory& dir) = 0;
 };
 
 } // namespace common

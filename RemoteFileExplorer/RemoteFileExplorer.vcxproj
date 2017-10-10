@@ -188,8 +188,11 @@
     <ClInclude Include="Client\Network\ServerConnector.h" />
     <ClInclude Include="Client\RemoteFileExplorer.h" />
     <ClInclude Include="Common\FileExplorerInterface.h" />
-    <ClInclude Include="Message\EchoMessage.h" />
+    <ClInclude Include="Common\FileSystem.h" />
+    <ClInclude Include="Message\GetDirectoryInfoMessage.h" />
+    <ClInclude Include="Message\GetLogicalDriveInfoMessage.h" />
     <ClInclude Include="Message\Message.h" />
+    <ClInclude Include="Message\Serialization.h" />
     <ClInclude Include="MFC\Client\CClientDialog.h" />
     <ClInclude Include="MFC\CMainFrame.h" />
     <ClInclude Include="MFC\CMainView.h" />
@@ -213,8 +216,10 @@
   <ItemGroup>
     <ClCompile Include="Client\Network\ServerConnector.cpp" />
     <ClCompile Include="Client\RemoteFileExplorer.cpp" />
-    <ClCompile Include="Message\EchoMessage.cpp" />
+    <ClCompile Include="Message\GetDirectoryInfoMessage.cpp" />
+    <ClCompile Include="Message\GetLogicalDriveInfoMessage.cpp" />
     <ClCompile Include="Message\Message.cpp" />
+    <ClCompile Include="Message\Serialization.cpp" />
     <ClCompile Include="MFC\Client\CClientDialog.cpp" />
     <ClCompile Include="MFC\CMainFrame.cpp" />
     <ClCompile Include="MFC\CMainView.cpp" />

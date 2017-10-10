@@ -17,10 +17,9 @@ int HandleClientPacket(
 	std::size_t maxBufferSize);
 
 ///////////////////////////////////////////////////////////////////////////////
-int HandleClientMessage(
+std::unique_ptr<message::ServerMessage> HandleClientMessage(
 	ClientSession& session,
-	message::ClientMessage& clientMessage,
-	std::unique_ptr<message::ServerMessage>& serverMessage);
+	message::ClientMessage& clientMessage);
 
 } // namespace network
 } // namespace server

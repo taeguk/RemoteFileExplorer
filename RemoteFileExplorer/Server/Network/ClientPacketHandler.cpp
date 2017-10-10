@@ -1,6 +1,7 @@
 #include "Server/Network/ClientPacketHandler.h"
 
-#include "Message/EchoMessage.h"
+#include "Message/GetLogicalDriveInfoMessage.h"
+#include "Message/GetDirectoryInfoMessage.h"
 
 namespace remoteFileExplorer
 {
@@ -27,9 +28,10 @@ int HandleClientPacket(
 	message::ClientMessage& clientMessage =
 		reinterpret_cast<message::ClientMessage&>(*message);
 
-	std::unique_ptr<message::ServerMessage> serverMessage = nullptr;
+	std::unique_ptr<message::ServerMessage> serverMessage =
+		HandleClientMessage(session, clientMessage);
 
-	if (network::HandleClientMessage(session, clientMessage, serverMessage) != 0)
+	if (serverMessage == nullptr)
 		return -1;
 
 	*bufferSize = maxBufferSize;
@@ -40,31 +42,45 @@ int HandleClientPacket(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int HandleClientMessage(
+std::unique_ptr<message::ServerMessage> HandleClientMessage(
 	ClientSession& session,
-	message::ClientMessage& clientMessage,
-	std::unique_ptr<message::ServerMessage>& serverMessage)
+	message::ClientMessage& clientMessage)
 {
 	using namespace message;
 
 	switch (clientMessage.GetMessageFlag())
 	{
-	case MessageFlag::EchoRequest:
+	case MessageFlag::GetLogicalDriveInfoRequest:
 	{
-		EchoRequestMessage& message =
-			EchoRequestMessage::TypeCastFromMessage(clientMessage);
+		GetLogicalDriveInfoRequest& message =
+			GetLogicalDriveInfoRequest::TypeCastFromMessage(clientMessage);
 
 		common::FileExplorerInterface& fileExplorer = session.GetFileExplorer();
-		std::string result = fileExplorer.Echo(message.GetString().c_str());
+		std::vector<common::LogicalDrive> drives;
 
-		serverMessage = std::make_unique<EchoReplyMessage>(std::move(result));
+		if (fileExplorer.GetLogicalDriveInfo(drives) != 0)
+			return nullptr;
+
+		return std::make_unique<GetLogicalDriveInfoReply>(std::move(drives));
+	}
+	break;
+	case MessageFlag::GetDirectoryInfoRequest:
+	{
+		GetDirectoryInfoRequest& message =
+			GetDirectoryInfoRequest::TypeCastFromMessage(clientMessage);
+
+		common::FileExplorerInterface& fileExplorer = session.GetFileExplorer();
+		common::Directory dir;
+
+		if (fileExplorer.GetDirectoryInfo(message.GetPathRef(), dir) != 0)
+			return nullptr;
+
+		return std::make_unique<GetDirectoryInfoReply>(std::move(dir));
 	}
 	break;
 	default:
-		return -1;
+		return nullptr;
 	}
-
-	return 0;
 }
 
 } // namespace network

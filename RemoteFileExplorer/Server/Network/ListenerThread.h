@@ -18,6 +18,7 @@ namespace server
 {
 namespace network
 {
+// TODO: std::thread 등 STL에 대한 exception 처리도 다 해야하려나...(고통...ㅠㅜ)
 ///////////////////////////////////////////////////////////////////////////////
 class ListenerThread final
 {

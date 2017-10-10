@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace remoteFileExplorer
 {
 namespace server
@@ -10,7 +12,8 @@ class FileExplorerWatcherInterface
 public:
 	virtual ~FileExplorerWatcherInterface() = default;
 
-	virtual void Echo(const char* str) = 0;
+	virtual void GetLogicalDriveInfo() = 0;
+	virtual void GetDirectoryInfo(const std::wstring& path) = 0;
 };
 
 } // namespace server
