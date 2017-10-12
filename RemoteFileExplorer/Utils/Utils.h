@@ -17,18 +17,10 @@ constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {
 
 ///////////////////////////////////////////////////////////////////////////////
 // convert UTF-8 string to wstring
-std::wstring utf8_to_wstring(const std::string& u8_str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
-	return myconv.from_bytes(u8_str);
-}
+std::wstring utf8_to_wstring(const std::string& u8_str);
 
 // convert wstring to UTF-8 string
-std::string wstring_to_utf8(const std::wstring& str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
-	return myconv.to_bytes(str);
-}
+std::string wstring_to_utf8(const std::wstring& str);
 
 ///////////////////////////////////////////////////////////////////////////////
 template <typename Functor>
@@ -49,7 +41,7 @@ private:
 };
 
 template <typename Functor>
-static auto CreateRAIIWrapper(Functor&& functor)
+auto CreateRAIIWrapper(Functor&& functor)
 	-> RAIIWrapper<Functor>
 {
 	return RAIIWrapper<Functor>(std::forward<Functor>(functor));

@@ -21,7 +21,9 @@ public:
 	virtual int GetLogicalDriveInfo(
 		std::vector<common::LogicalDrive>& drives) override;
 	virtual int GetDirectoryInfo(
-		const std::wstring& path, common::Directory& dir) override;
+		const std::wstring& path,
+		std::uint32_t offset,
+		common::Directory& dir) override;
 
 private:
 	std::shared_ptr<FileExplorerWatcherInterface> watcher_;  // TODO: 검토...(shared_ptr관련)

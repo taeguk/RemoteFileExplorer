@@ -62,7 +62,7 @@ int ListenerThread::ThreadMain_()
 
 	bind(hServerSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress));
 
-	listen(hServerSocket, (int)handlerThreads_.size());
+	listen(hServerSocket, static_cast<int>(handlerThreads_.size()));
 
 	// 소켓을 non-blocking으로 설정.
 	u_long cmdArg = 1;
@@ -107,15 +107,19 @@ int ListenerThread::ThreadMain_()
 		{
 			// 이미 세션이 존재하는 경우.
 			// 이상한 상황!!!
+			// TODO: what the fuck?
 			closesocket(hClientSocket);
 			continue;
 		}
 
 		ClientSession* clientSession = &(result.first->second);
 
-		CreateIoCompletionPort(
+		auto ptr = CreateIoCompletionPort(
 			(HANDLE)hClientSocket, hCompletionPort_, (ULONG_PTR)clientSession, 0/*TODO:검색*/);
 
+		int pppp = GetLastError();
+
+		/*
 		// 연결된 클라이언트를 위한 버퍼를 설정하고 OVERLAPPED 구조체 변수 초기화.
 		SocketBuffer* socketBuffer = SocketBuffer::AcquireBuffer();
 		if (socketBuffer == nullptr)
@@ -124,21 +128,27 @@ int ListenerThread::ThreadMain_()
 			// TODO: 몇가지 처리하기.
 			continue;
 		}
+		*/
 
 		DWORD flags = 0;
 
-		WSARecv(
+		int a = WSARecv(
 			hClientSocket,               // 클라이언트 소켓
-			&(socketBuffer->wsabuf),     // 버퍼
+			&clientSession->GetUpdatedWsabufRef(),                     // WSABUF
 			1,		                     // 버퍼의 수
 			nullptr,
 			&flags,
-			&(socketBuffer->overlapped), // OVERLAPPED 구조체 포인터
+			&clientSession->GetInitializedOVELAPPED(),  // OVERLAPPED 구조체 포인터
 			nullptr
 		);
+		int b = WSAGetLastError();
+
+		int c = 3;
 	}
 
 	closesocket(hServerSocket);
+
+	(void) WSACleanup();
 
 	return 0;
 }
@@ -146,8 +156,9 @@ int ListenerThread::ThreadMain_()
 ///////////////////////////////////////////////////////////////////////////////
 int ListenerThread::DestroyClientSession(SOCKET hSocket)
 {
+	// TODO: sessionMap에 대한 동기화.
 	auto it = sessionMap_.find(hSocket);
-	if (it != std::end(sessionMap_))
+	if (it == std::end(sessionMap_))
 		return -1;
 
 	sessionMap_.erase(it);

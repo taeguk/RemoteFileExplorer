@@ -18,7 +18,10 @@ public:
 	virtual ~FileExplorerInterface() = default;
 
 	virtual int GetLogicalDriveInfo(std::vector<LogicalDrive>& drives) = 0;
-	virtual int GetDirectoryInfo(const std::wstring& path, Directory& dir) = 0;
+	virtual int GetDirectoryInfo(
+		const std::wstring& path,
+		std::uint32_t offset,
+		Directory& dir) = 0;
 };
 
 } // namespace common

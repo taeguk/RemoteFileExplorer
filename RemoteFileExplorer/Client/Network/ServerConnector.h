@@ -21,7 +21,7 @@ public:
 	int Connect(std::uint8_t ipAddress[4], std::uint16_t port);
 	int Disconnect();
 	int Communicate(
-		const std::uint8_t* buffer,
+		std::uint8_t* buffer,
 		std::size_t* bufferSize,
 		std::size_t maxBufferSize);
 

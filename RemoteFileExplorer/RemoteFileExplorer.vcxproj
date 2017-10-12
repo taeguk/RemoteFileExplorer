@@ -233,6 +233,7 @@
     <ClCompile Include="Server\Network\ListenerThread.cpp" />
     <ClCompile Include="Server\Network\SocketBuffer.cpp" />
     <ClCompile Include="Server\Server.cpp" />
+    <ClCompile Include="Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\RemoteFileExplorer.rc2" />
@@ -248,7 +249,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="RemoteFileExplorer.rc" />
+      <UserProperties RESOURCE_FILE="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

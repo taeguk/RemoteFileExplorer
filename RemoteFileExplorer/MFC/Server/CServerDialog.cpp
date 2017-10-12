@@ -46,6 +46,8 @@ BOOL CServerDialog::OnInitDialog()
 	logListCtrl_.InsertColumn(1, _T("Log"), LVCFMT_LEFT, 90);
 	logListCtrl_.InsertColumn(2, _T("Etc"), LVCFMT_LEFT, 90);
 
+	portEdit_.SetWindowTextW(_T("9622"));
+
 	return TRUE;
 }
 
@@ -61,8 +63,10 @@ void CServerDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CServerDialog, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBUTTON_SERVER_CONTROL,
 		&CServerDialog::OnBnClickedMfcbuttonServerControl)
-	ON_MESSAGE(CServerDialog::FeWmBase + FileExplorerWatcher::WmOffsetEcho,
-		&CServerDialog::OnFeEcho)
+	ON_MESSAGE(CServerDialog::FeWmBase + FileExplorerWatcher::WmOffsetGetLogicalDriveInfo,
+		&CServerDialog::OnGetLogicalDriveInfo)
+	ON_MESSAGE(CServerDialog::FeWmBase + FileExplorerWatcher::WmOffsetGetDirectoryInfo,
+		&CServerDialog::OnGetDirectoryInfo)
 END_MESSAGE_MAP()
 
 
@@ -108,7 +112,7 @@ void CServerDialog::OnBnClickedMfcbuttonServerControl()
 	}
 }
 
-LRESULT CServerDialog::OnFeEcho(WPARAM wParam, LPARAM lParam)
+LRESULT CServerDialog::OnGetLogicalDriveInfo(WPARAM wParam, LPARAM lParam)
 {
 	//TODO: 아래같이 할까 말까?
 	/*
@@ -118,12 +122,25 @@ LRESULT CServerDialog::OnFeEcho(WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 	*/
-	auto str = std::unique_ptr<std::string>(
-		reinterpret_cast<std::string*>(wParam));
 
-	int nIndex = logListCtrl_.InsertItem(0, _T("Echo"));
-	logListCtrl_.SetItemText(nIndex, 1, CString(str->c_str()));
-	logListCtrl_.SetItemText(nIndex, 2, _T("."));
+	int nIndex = logListCtrl_.InsertItem(0, _T("Get Logical Drive Info"));
+	logListCtrl_.SetItemText(nIndex, 1, _T(""));
+	logListCtrl_.SetItemText(nIndex, 2, _T(""));
+
+	return 0;
+}
+
+LRESULT CServerDialog::OnGetDirectoryInfo(WPARAM wParam, LPARAM lParam)
+{
+	using ParamType = std::pair<std::wstring, std::uint32_t>;
+
+	auto param =
+		std::unique_ptr<ParamType>(reinterpret_cast<ParamType*>(wParam));
+
+	int nIndex = logListCtrl_.InsertItem(0, _T("Get Directory Info"));
+	logListCtrl_.SetItemText(nIndex, 1, CString(param->first.c_str()));
+	logListCtrl_.SetItemText(nIndex, 2, CString(
+		std::to_string(param->second).c_str()));
 
 	return 0;
 }

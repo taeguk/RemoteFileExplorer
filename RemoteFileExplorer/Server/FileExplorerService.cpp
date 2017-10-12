@@ -17,6 +17,7 @@ inline time_t filetime_to_time_t(const FILETIME& ft)
 
     return ull.QuadPart / 10000000ULL - 11644473600ULL;
 }
+const std::uint32_t MaxGotFileCount = 50;
 } // unnamed namespace
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,17 +32,25 @@ int FileExplorerService::GetLogicalDriveInfo(
 	if (driveMask == 0)
 		return -1;
 
-	wchar_t letter = L'A';
+	char letterStr[] = "A";
 	wchar_t drivePath[4] = L"?:\\";
 	wchar_t driveName[MAX_PATH + 1];
-	for (; driveMask; driveMask >>= 1, ++letter)
+	for (; driveMask; driveMask >>= 1, ++letterStr[0])
 	{
 		if (driveMask & 1)
 		{
 			LogicalDrive drive;
-			drive.letter = letter;
+			drive.letter = letterStr[0];
 
-			drivePath[0] = letter;
+			// Drive 문자를 wide character로 변환하여 drivePath에 업데이트.
+			{
+				auto wstr = utils::utf8_to_wstring(std::string(letterStr));
+
+				if (wstr.length() != 1)
+					continue;
+
+				drivePath[0] = wstr[0];
+			}
 
 			if (!GetVolumeInformationW(
 				drivePath,
@@ -59,12 +68,15 @@ int FileExplorerService::GetLogicalDriveInfo(
 		}
 	}
 
+	watcher_->GetLogicalDriveInfo();
+
 	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 int FileExplorerService::GetDirectoryInfo(
 	const std::wstring & path,
+	std::uint32_t offset,
 	common::Directory & dir)
 {
 	using common::FileInformation;
@@ -75,15 +87,24 @@ int FileExplorerService::GetDirectoryInfo(
 	HANDLE hFind;
 
 	hFind = FindFirstFileW(
-		(std::wstring(path.c_str()) += L"/*").c_str(), &ffd);
+		(std::wstring(path.c_str()) += L"\\*").c_str(), &ffd);
 
 	if (hFind == INVALID_HANDLE_VALUE)
 		return -1;
 
+	const std::uint32_t givenOffset = offset;
+	std::uint32_t count = 0;
 	dir.path = path;
 
+	bool success = true;
 	do
 	{
+		if (offset > 0)
+		{
+			--offset;
+			continue;
+		}
+
 		FileInformation fileInfo;
 		//
 		fileInfo.fileName = ffd.cFileName;
@@ -119,12 +140,18 @@ int FileExplorerService::GetDirectoryInfo(
 
 		dir.fileInfos.push_back(std::move(fileInfo));
 
-	} while (FindNextFileW(hFind, &ffd));
+		// 한번에 얻을 수 있는 최대 파일 수는 정해져 있다.
+		if (++count > MaxGotFileCount)
+			break;
 
-	if (GetLastError() != ERROR_NO_MORE_FILES)
+	} while (success = FindNextFileW(hFind, &ffd));
+
+	if (!success && GetLastError() != ERROR_NO_MORE_FILES)
 		return -1;
 
 	FindClose(hFind);
+
+	watcher_->GetDirectoryInfo(path, givenOffset);
 
 	return 0;
 }

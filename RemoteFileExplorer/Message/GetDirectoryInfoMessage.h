@@ -13,10 +13,11 @@ namespace message
 class GetDirectoryInfoRequest : public ClientMessage
 {
 public:
-	explicit GetDirectoryInfoRequest(std::wstring&& path);
+	explicit GetDirectoryInfoRequest(std::wstring&& path, std::uint32_t offset);
 
 	virtual int Serialize(std::uint8_t* buffer, std::size_t* bufferSize) override;
-	const std::wstring& GetPathRef() const { path_; }
+	const std::wstring& GetPathRef() const { return path_; }
+	std::uint32_t GetOffset() const { return offset_; }
 
 	static GetDirectoryInfoRequest& TypeCastFromMessage(Message& message);
 	static std::unique_ptr<GetDirectoryInfoRequest> Deserialize(
@@ -28,15 +29,17 @@ public:
 
 private:
 	std::wstring path_;
+	std::uint32_t offset_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 class GetDirectoryInfoReply : public ServerMessage
 {
 public:
-	explicit GetDirectoryInfoReply(common::Directory&& dir);
+	explicit GetDirectoryInfoReply(std::int8_t statusCode, common::Directory&& dir);
 
 	virtual int Serialize(std::uint8_t* buffer, std::size_t* bufferSize) override;
+	std::int8_t GetStatusCode() const { return statusCode_; }
 	common::Directory&& GetDirectoryRvalueRef() { return std::move(dir_); }
 
 	static GetDirectoryInfoReply& TypeCastFromMessage(Message& message);
@@ -48,19 +51,28 @@ public:
 		MessageFlag::GetDirectoryInfoReply;
 
 private:
+	std::int8_t statusCode_;
 	common::Directory dir_;
 };
 
 /*****************************************************************************/
 /****************************** INLINE FUNCTIONS *****************************/
 /*****************************************************************************/
-inline GetDirectoryInfoRequest::GetDirectoryInfoRequest(std::wstring&& path)
-	: ClientMessage(_MessageFlag), path_(std::move(path))
+inline GetDirectoryInfoRequest::GetDirectoryInfoRequest(
+	std::wstring&& path,
+	std::uint32_t offset)
+	: ClientMessage(_MessageFlag),
+	  path_(std::move(path)),
+	  offset_(offset)
 {
 }
 
-inline GetDirectoryInfoReply::GetDirectoryInfoReply(common::Directory&& dir)
-	: ServerMessage(_MessageFlag), dir_(std::move(dir))
+inline GetDirectoryInfoReply::GetDirectoryInfoReply(
+	std::int8_t statusCode,
+	common::Directory&& dir)
+	: ServerMessage(_MessageFlag),
+	  statusCode_(statusCode),
+	  dir_(std::move(dir))
 {
 }
 

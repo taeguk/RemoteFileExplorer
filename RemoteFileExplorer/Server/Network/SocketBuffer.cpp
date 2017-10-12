@@ -10,9 +10,7 @@ namespace network
 /*static*/ SocketBuffer* SocketBuffer::AcquireBuffer()
 {
 	SocketBuffer* socketBuffer = new SocketBuffer;
-	memset(&(socketBuffer->overlapped), 0, sizeof(socketBuffer->overlapped));
-	socketBuffer->wsabuf.len = MaxBufferSize;
-	socketBuffer->wsabuf.buf = (char*)socketBuffer->buffer;
+	socketBuffer->Reset();
 	return socketBuffer;
 }
 
@@ -27,7 +25,8 @@ namespace network
 void SocketBuffer::Reset()
 {
 	memset(&overlapped, 0, sizeof(overlapped));
-	wsabuf.len = 1024;
+	wsabuf.buf = reinterpret_cast<char*>(buffer);
+	wsabuf.len = MaxBufferSize;
 }
 
 } // namespace network

@@ -67,6 +67,9 @@
     <Filter Include="헤더 파일\Server\Network">
       <UniqueIdentifier>{9ffa2e31-5056-4a1c-a92b-9d34bb3db5d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Utils">
+      <UniqueIdentifier>{c9ef35e5-bda0-4b99-89ec-112d21c4886d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -211,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="Message\Serialization.cpp">
       <Filter>소스 파일\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Utils.cpp">
+      <Filter>소스 파일\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

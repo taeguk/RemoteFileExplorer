@@ -32,9 +32,11 @@ private:
 class GetLogicalDriveInfoReply : public ServerMessage
 {
 public:
-	explicit GetLogicalDriveInfoReply(std::vector<common::LogicalDrive>&& drives);
+	explicit GetLogicalDriveInfoReply(std::int8_t statusCode,
+		std::vector<common::LogicalDrive>&& drives);
 
 	virtual int Serialize(std::uint8_t* buffer, std::size_t* bufferSize) override;
+	std::int8_t GetStatusCode() const { return statusCode_; }
 	std::vector<common::LogicalDrive>&&
 		GetLogicalDrivesRvalueRef() { return std::move(drives_); }
 
@@ -47,6 +49,7 @@ public:
 		MessageFlag::GetLogicalDriveInfoReply;
 
 private:
+	std::int8_t statusCode_;
 	std::vector<common::LogicalDrive> drives_;
 };
 
@@ -59,8 +62,11 @@ inline GetLogicalDriveInfoRequest::GetLogicalDriveInfoRequest()
 }
 
 inline GetLogicalDriveInfoReply::GetLogicalDriveInfoReply(
+	std::int8_t statusCode,
 	std::vector<common::LogicalDrive>&& drives)
-	: ServerMessage(_MessageFlag), drives_(std::move(drives))
+	: ServerMessage(_MessageFlag),
+	  statusCode_(statusCode),
+	  drives_(std::move(drives))
 {
 }
 

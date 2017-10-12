@@ -12,13 +12,14 @@ namespace network
 ///////////////////////////////////////////////////////////////////////////////
 int HandleClientPacket(
 	ClientSession& session,
-	std::uint8_t* buffer,
-	std::size_t* bufferSize,
-	std::size_t maxBufferSize)
+	const std::uint8_t* recvBuffer,
+	std::size_t recvBufferSize,
+	std::uint8_t* sendBuffer,
+	std::size_t* sendBufferSize)
 {
 	// Get message by deserializing packet.
 	std::unique_ptr<message::Message> message =
-		message::Message::Deserialize(buffer, *bufferSize);
+		message::Message::Deserialize(recvBuffer, recvBufferSize);
 
 	// Process only correct client message.
 	// Don't process invalid packet or server message.
@@ -34,8 +35,7 @@ int HandleClientPacket(
 	if (serverMessage == nullptr)
 		return -1;
 
-	*bufferSize = maxBufferSize;
-	if (serverMessage->Serialize(buffer, bufferSize) != 0)
+	if (serverMessage->Serialize(sendBuffer, sendBufferSize) != 0)
 		return -1;
 
 	return 0;
@@ -56,12 +56,14 @@ std::unique_ptr<message::ServerMessage> HandleClientMessage(
 			GetLogicalDriveInfoRequest::TypeCastFromMessage(clientMessage);
 
 		common::FileExplorerInterface& fileExplorer = session.GetFileExplorer();
+
+		std::int8_t statusCode = 0;
 		std::vector<common::LogicalDrive> drives;
 
 		if (fileExplorer.GetLogicalDriveInfo(drives) != 0)
-			return nullptr;
+			statusCode = -1;
 
-		return std::make_unique<GetLogicalDriveInfoReply>(std::move(drives));
+		return std::make_unique<GetLogicalDriveInfoReply>(statusCode, std::move(drives));
 	}
 	break;
 	case MessageFlag::GetDirectoryInfoRequest:
@@ -70,12 +72,19 @@ std::unique_ptr<message::ServerMessage> HandleClientMessage(
 			GetDirectoryInfoRequest::TypeCastFromMessage(clientMessage);
 
 		common::FileExplorerInterface& fileExplorer = session.GetFileExplorer();
+
+		std::int8_t statusCode = 0;
 		common::Directory dir;
 
-		if (fileExplorer.GetDirectoryInfo(message.GetPathRef(), dir) != 0)
-			return nullptr;
+		if (fileExplorer.GetDirectoryInfo(
+			message.GetPathRef(),
+			message.GetOffset(),
+			dir) != 0)
+		{
+			statusCode = -1;
+		}
 
-		return std::make_unique<GetDirectoryInfoReply>(std::move(dir));
+		return std::make_unique<GetDirectoryInfoReply>(statusCode, std::move(dir));
 	}
 	break;
 	default:

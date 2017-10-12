@@ -12,9 +12,10 @@ namespace network
 ///////////////////////////////////////////////////////////////////////////////
 int HandleClientPacket(
 	ClientSession& session,
-	std::uint8_t* buffer,
-	std::size_t* bufferSize,
-	std::size_t maxBufferSize);
+	const std::uint8_t* recvBuffer,
+	std::size_t recvBufferSize,
+	std::uint8_t* sendBuffer,
+	std::size_t* sendBufferSize);
 
 ///////////////////////////////////////////////////////////////////////////////
 std::unique_ptr<message::ServerMessage> HandleClientMessage(

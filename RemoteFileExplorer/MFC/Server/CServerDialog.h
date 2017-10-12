@@ -42,7 +42,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnBnClickedMfcbuttonServerControl();
-	afx_msg LRESULT OnFeEcho(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGetLogicalDriveInfo(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGetDirectoryInfo(WPARAM wParam, LPARAM lParam);
 
 private:
 	static const UINT FeWmBase{ WM_APP }; // file explorer window message base
