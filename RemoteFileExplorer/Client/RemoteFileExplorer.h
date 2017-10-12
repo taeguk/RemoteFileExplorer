@@ -1,10 +1,9 @@
 #pragma once
 
-// TODO: 경로 절대경로로 바꾸기 (다른곳도)
-#include "Common/FileExplorerInterface.h"
-#include "ServerConnector.h"
 #include <memory>
-#include "Message/EchoMessage.h"
+
+#include "Client/Network/ServerConnector.h"
+#include "Common/FileExplorerInterface.h"
 
 namespace remoteFileExplorer
 {
@@ -19,10 +18,15 @@ public:
 	int Disconnect();
 
 	// 동기적으로(blocking으로) 수행.
-	virtual std::string Echo(const char* str) override;
+	virtual int GetLogicalDriveInfo(
+		std::vector<common::LogicalDrive>& drives) override;
+	virtual int GetDirectoryInfo(
+		const std::wstring& path,
+		std::uint32_t offset,
+		common::Directory& dir) override;
 
 private:
-	ServerConnector serverConnector_;
+	network::ServerConnector serverConnector_;
 };
 
 } // namespace client

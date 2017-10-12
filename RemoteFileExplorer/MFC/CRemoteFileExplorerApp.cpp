@@ -3,8 +3,10 @@
 //
 
 #include "MFC/stdafx.h"
-#include "afxwinappex.h"
-#include "afxdialogex.h"
+
+#include <afxwinappex.h>
+#include <afxdialogex.h>
+
 #include "MFC/CRemoteFileExplorerApp.h"
 #include "MFC/CMainFrame.h"
 

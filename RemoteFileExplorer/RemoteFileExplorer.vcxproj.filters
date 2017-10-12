@@ -55,19 +55,28 @@
     <Filter Include="소스 파일\Client">
       <UniqueIdentifier>{a82e9ab1-6a9a-4d92-a4ef-be52266f4d61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Client\Network">
+      <UniqueIdentifier>{7ea0cb94-ea31-4fc5-b105-05ce7230b41f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Server\Network">
+      <UniqueIdentifier>{93c0c7db-4702-4f93-81df-d352f163496d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Client\Network">
+      <UniqueIdentifier>{84597a15-8a50-4954-bd2a-00bc7f61347e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Server\Network">
+      <UniqueIdentifier>{9ffa2e31-5056-4a1c-a92b-9d34bb3db5d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utils">
+      <UniqueIdentifier>{c9ef35e5-bda0-4b99-89ec-112d21c4886d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Server\ClientSession.h">
-      <Filter>헤더 파일\Server</Filter>
-    </ClInclude>
     <ClInclude Include="Server\Server.h">
       <Filter>헤더 파일\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Message\EchoMessage.h">
-      <Filter>헤더 파일\Message</Filter>
     </ClInclude>
     <ClInclude Include="Message\Message.h">
       <Filter>헤더 파일\Message</Filter>
@@ -80,12 +89,6 @@
     </ClInclude>
     <ClInclude Include="Utils\Utils.h">
       <Filter>헤더 파일\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Server\ClientPacketHandler.h">
-      <Filter>헤더 파일\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Client\ServerConnector.h">
-      <Filter>헤더 파일\Client</Filter>
     </ClInclude>
     <ClInclude Include="MFC\Client\CClientDialog.h">
       <Filter>헤더 파일\MFC\Client</Filter>
@@ -111,9 +114,6 @@
     <ClInclude Include="MFC\targetver.h">
       <Filter>헤더 파일\MFC</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Server\FileExplorerWatcherInterface.h">
       <Filter>헤더 파일\Server</Filter>
     </ClInclude>
@@ -126,22 +126,43 @@
     <ClInclude Include="Server\FileExplorerService.h">
       <Filter>헤더 파일\Server</Filter>
     </ClInclude>
+    <ClInclude Include="Client\Network\ServerConnector.h">
+      <Filter>헤더 파일\Client\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Network\ClientHandlerThread.h">
+      <Filter>헤더 파일\Server\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Network\ClientPacketHandler.h">
+      <Filter>헤더 파일\Server\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Network\ClientSession.h">
+      <Filter>헤더 파일\Server\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Network\ListenerThread.h">
+      <Filter>헤더 파일\Server\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Network\SocketBuffer.h">
+      <Filter>헤더 파일\Server\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Message\GetLogicalDriveInfoMessage.h">
+      <Filter>헤더 파일\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\FileSystem.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Message\GetDirectoryInfoMessage.h">
+      <Filter>헤더 파일\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="Message\Serialization.h">
+      <Filter>헤더 파일\Message</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server\Server.cpp">
       <Filter>소스 파일\Server</Filter>
     </ClCompile>
-    <ClCompile Include="Server\ClientPacketHandler.cpp">
-      <Filter>소스 파일\Server</Filter>
-    </ClCompile>
     <ClCompile Include="Message\Message.cpp">
       <Filter>소스 파일\Message</Filter>
-    </ClCompile>
-    <ClCompile Include="Message\EchoMessage.cpp">
-      <Filter>소스 파일\Message</Filter>
-    </ClCompile>
-    <ClCompile Include="Client\ServerConnector.cpp">
-      <Filter>소스 파일\Client</Filter>
     </ClCompile>
     <ClCompile Include="Client\RemoteFileExplorer.cpp">
       <Filter>소스 파일\Client</Filter>
@@ -169,6 +190,33 @@
     </ClCompile>
     <ClCompile Include="Server\FileExplorerService.cpp">
       <Filter>소스 파일\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Client\Network\ServerConnector.cpp">
+      <Filter>소스 파일\Client\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Network\SocketBuffer.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Network\ListenerThread.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Network\ClientPacketHandler.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Network\ClientHandlerThread.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Message\GetLogicalDriveInfoMessage.cpp">
+      <Filter>소스 파일\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="Message\GetDirectoryInfoMessage.cpp">
+      <Filter>소스 파일\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="Message\Serialization.cpp">
+      <Filter>소스 파일\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Utils.cpp">
+      <Filter>소스 파일\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

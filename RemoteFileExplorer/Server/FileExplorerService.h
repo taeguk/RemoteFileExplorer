@@ -1,8 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #include "Server/FileExplorerServiceInterface.h"
 #include "Server/FileExplorerWatcherInterface.h"
-#include <memory>
 
 namespace remoteFileExplorer
 {
@@ -17,10 +18,15 @@ public:
 
 	virtual std::unique_ptr<FileExplorerServiceInterface> Clone() const override;
 
-	virtual std::string Echo(const char* str) override;
+	virtual int GetLogicalDriveInfo(
+		std::vector<common::LogicalDrive>& drives) override;
+	virtual int GetDirectoryInfo(
+		const std::wstring& path,
+		std::uint32_t offset,
+		common::Directory& dir) override;
 
 private:
-	std::shared_ptr<FileExplorerWatcherInterface> watcher_;
+	std::shared_ptr<FileExplorerWatcherInterface> watcher_;  // TODO: 검토...(shared_ptr관련)
 };
 
 /*****************************************************************************/

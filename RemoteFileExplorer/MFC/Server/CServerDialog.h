@@ -1,11 +1,12 @@
 #pragma once
 
+#include <afxwin.h>
+#include <afxcmn.h>
+#include <afxbutton.h>
+
 #include "MFC/resource.h"
-#include "Server/Server.h"
 #include "MFC/Server/FileExplorerWatcher.h"
-#include "afxbutton.h"
-#include "afxwin.h"
-#include "afxcmn.h"
+#include "Server/Server.h"
 
 namespace remoteFileExplorer
 {
@@ -41,7 +42,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnBnClickedMfcbuttonServerControl();
-	afx_msg LRESULT OnFeEcho(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGetLogicalDriveInfo(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGetDirectoryInfo(WPARAM wParam, LPARAM lParam);
 
 private:
 	static const UINT FeWmBase{ WM_APP }; // file explorer window message base

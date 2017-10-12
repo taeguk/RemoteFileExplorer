@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Server/FileExplorerWatcherInterface.h"
 #include <windows.h>
+
+#include "Server/FileExplorerWatcherInterface.h"
 
 namespace remoteFileExplorer
 {
@@ -16,14 +17,18 @@ class FileExplorerWatcher
 public:
 	enum
 	{
-		WmOffsetEcho = 0,
+		WmOffsetGetLogicalDriveInfo = 0,
+		WmOffsetGetDirectoryInfo,
 
 		WmUpperOffset
 	};
 
 	FileExplorerWatcher(HWND hWindow, UINT wmBase) : hWindow_(hWindow), wmBase_(wmBase) {}
 
-	virtual void Echo(const char* str) override;
+	virtual void GetLogicalDriveInfo() override;
+	virtual void GetDirectoryInfo(
+		const std::wstring& path,
+		std::uint32_t offset) override;
 
 private:
 	HWND hWindow_;

@@ -94,7 +94,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,7 +115,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,7 +138,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,7 +163,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -185,11 +185,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Client\Network\ServerConnector.h" />
     <ClInclude Include="Client\RemoteFileExplorer.h" />
-    <ClInclude Include="Client\ServerConnector.h" />
     <ClInclude Include="Common\FileExplorerInterface.h" />
-    <ClInclude Include="Message\EchoMessage.h" />
+    <ClInclude Include="Common\FileSystem.h" />
+    <ClInclude Include="Message\GetDirectoryInfoMessage.h" />
+    <ClInclude Include="Message\GetLogicalDriveInfoMessage.h" />
     <ClInclude Include="Message\Message.h" />
+    <ClInclude Include="Message\Serialization.h" />
     <ClInclude Include="MFC\Client\CClientDialog.h" />
     <ClInclude Include="MFC\CMainFrame.h" />
     <ClInclude Include="MFC\CMainView.h" />
@@ -199,20 +202,24 @@
     <ClInclude Include="MFC\Server\FileExplorerWatcher.h" />
     <ClInclude Include="MFC\stdafx.h" />
     <ClInclude Include="MFC\targetver.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Server\ClientSession.h" />
     <ClInclude Include="Server\FileExplorerService.h" />
     <ClInclude Include="Server\FileExplorerServiceInterface.h" />
     <ClInclude Include="Server\FileExplorerWatcherInterface.h" />
+    <ClInclude Include="Server\Network\ClientHandlerThread.h" />
+    <ClInclude Include="Server\Network\ClientPacketHandler.h" />
+    <ClInclude Include="Server\Network\ClientSession.h" />
+    <ClInclude Include="Server\Network\ListenerThread.h" />
+    <ClInclude Include="Server\Network\SocketBuffer.h" />
     <ClInclude Include="Server\Server.h" />
-    <ClInclude Include="Server\ClientPacketHandler.h" />
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Client\Network\ServerConnector.cpp" />
     <ClCompile Include="Client\RemoteFileExplorer.cpp" />
-    <ClCompile Include="Client\ServerConnector.cpp" />
-    <ClCompile Include="Message\EchoMessage.cpp" />
+    <ClCompile Include="Message\GetDirectoryInfoMessage.cpp" />
+    <ClCompile Include="Message\GetLogicalDriveInfoMessage.cpp" />
     <ClCompile Include="Message\Message.cpp" />
+    <ClCompile Include="Message\Serialization.cpp" />
     <ClCompile Include="MFC\Client\CClientDialog.cpp" />
     <ClCompile Include="MFC\CMainFrame.cpp" />
     <ClCompile Include="MFC\CMainView.cpp" />
@@ -221,8 +228,12 @@
     <ClCompile Include="MFC\Server\FileExplorerWatcher.cpp" />
     <ClCompile Include="MFC\stdafx.cpp" />
     <ClCompile Include="Server\FileExplorerService.cpp" />
+    <ClCompile Include="Server\Network\ClientHandlerThread.cpp" />
+    <ClCompile Include="Server\Network\ClientPacketHandler.cpp" />
+    <ClCompile Include="Server\Network\ListenerThread.cpp" />
+    <ClCompile Include="Server\Network\SocketBuffer.cpp" />
     <ClCompile Include="Server\Server.cpp" />
-    <ClCompile Include="Server\ClientPacketHandler.cpp" />
+    <ClCompile Include="Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\RemoteFileExplorer.rc2" />
@@ -238,7 +249,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="RemoteFileExplorer.rc" />
+      <UserProperties RESOURCE_FILE="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

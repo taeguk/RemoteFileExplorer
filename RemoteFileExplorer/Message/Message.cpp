@@ -1,5 +1,8 @@
-#include "Message.h"
-#include "EchoMessage.h"
+#include "Message/Message.h"
+
+#include "Message/GetLogicalDriveInfoMessage.h"
+#include "Message/GetDirectoryInfoMessage.h"
+#include "Message/Serialization.h"
 
 namespace remoteFileExplorer
 {
@@ -8,14 +11,13 @@ namespace message
 ///////////////////////////////////////////////////////////////////////////////
 int Message::Serialize(std::uint8_t* buffer, std::size_t* bufferSize)
 {
-	const std::size_t requiredSize = sizeof(_MessageFlag);
-	
-	if (*bufferSize < requiredSize)
+	std::size_t givenBufferSize = *bufferSize;
+
+	if (SerializeWithMemcpy(buffer, *bufferSize, messageFlag_) != 0)
 		return -1;
 
-	std::uint8_t rawMessageFlag = utils::to_underlying(_MessageFlag);
-	*buffer = rawMessageFlag;
-	*bufferSize = requiredSize;
+	// Return the size of serialized data as bufferSize.
+	*bufferSize = givenBufferSize - *bufferSize;
 
 	return 0;
 }
@@ -25,17 +27,24 @@ int Message::Serialize(std::uint8_t* buffer, std::size_t* bufferSize)
 	const std::uint8_t* buffer,
 	std::size_t bufferSize)
 {
-	MessageFlag messageFlag = static_cast<MessageFlag>(*buffer);
-	++buffer;
-	--bufferSize;
+	MessageFlag messageFlag;
+
+	if (DeserializeWithMemcpy(buffer, bufferSize, messageFlag) != 0)
+		return nullptr;
 
 	switch (messageFlag)
 	{
-	case MessageFlag::EchoRequest:
-		return EchoRequestMessage::Deserialize(buffer, bufferSize);
+	case MessageFlag::GetLogicalDriveInfoRequest:
+		return GetLogicalDriveInfoRequest::Deserialize(buffer, bufferSize);
 		break;
-	case MessageFlag::EchoReply:
-		return EchoReplyMessage::Deserialize(buffer, bufferSize);
+	case MessageFlag::GetLogicalDriveInfoReply:
+		return GetLogicalDriveInfoReply::Deserialize(buffer, bufferSize);
+		break;
+	case MessageFlag::GetDirectoryInfoRequest:
+		return GetDirectoryInfoRequest::Deserialize(buffer, bufferSize);
+		break;
+	case MessageFlag::GetDirectoryInfoReply:
+		return GetDirectoryInfoReply::Deserialize(buffer, bufferSize);
 		break;
 	default:
 		return nullptr;
