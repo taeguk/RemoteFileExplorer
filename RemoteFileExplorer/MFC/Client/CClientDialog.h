@@ -16,25 +16,25 @@ namespace client
 ///////////////////////////////////////////////////////////////////////////////
 enum class ClientStatus
 {
-	Connected,
-	Disconnected
+    Connected,
+    Disconnected
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 enum class ViewMode
 {
-	BigIcon = 0,
-	Icon,
-	Simple,
-	Report
+    BigIcon = 0,
+    Icon,
+    Simple,
+    Report
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 enum class FileSpecialBehavior
 {
-	None,
-	CurrentDirectory,  // "." Directory
-	ParentDirectory    // ".." Directory
+    None,
+    CurrentDirectory,  // "." Directory
+    ParentDirectory    // ".." Directory
 
 };
 
@@ -46,95 +46,95 @@ enum class FileSpecialBehavior
 // Dir Tree View와 File List View는 모두 이 자료구조를 바탕으로 형성된다.
 struct FileTree
 {
-	std::wstring fullPath;
-	common::FileInformation f;
+    std::wstring fullPath;
+    common::FileInformation f;
 
-	FileTree* parent;
-	std::vector<std::unique_ptr<FileTree>> childs; // Only for directory.
+    FileTree* parent;
+    std::vector<std::unique_ptr<FileTree>> childs; // Only for directory.
 
-	// Directory Tree Control에서의 item handle을 나타낸다.
-	// 만약 값이 nullptr이라면, tree view에 보여지고 있지 않음을 의미한다.
-	// 파일은 항상 이 값이 nullptr이다. (tree view에 보여지지 않으므로.)
-	HTREEITEM hTreeItem{ nullptr }; // Only for directory.
-	FileSpecialBehavior specialBehavior;
+    // Directory Tree Control에서의 item handle을 나타낸다.
+    // 만약 값이 nullptr이라면, tree view에 보여지고 있지 않음을 의미한다.
+    // 파일은 항상 이 값이 nullptr이다. (tree view에 보여지지 않으므로.)
+    HTREEITEM hTreeItem{ nullptr }; // Only for directory.
+    FileSpecialBehavior specialBehavior;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // Client의 UI를 담당한다.
 class CClientDialog : public CDialogEx
 {
-	DECLARE_DYNAMIC(CClientDialog)
+    DECLARE_DYNAMIC(CClientDialog)
 
 public:
-	CClientDialog(CWnd* pParent = nullptr);
-	virtual ~CClientDialog() override;
+    CClientDialog(CWnd* pParent = nullptr);
+    virtual ~CClientDialog() override;
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_CLIENT };
+    enum { IDD = IDD_CLIENT };
 #endif
 
 protected:
-	virtual BOOL OnInitDialog() override;
-	virtual void DoDataExchange(CDataExchange* pDX) override; // DDX/DDV 지원입니다.
+    virtual BOOL OnInitDialog() override;
+    virtual void DoDataExchange(CDataExchange* pDX) override; // DDX/DDV 지원입니다.
 
-	DECLARE_MESSAGE_MAP()
-	afx_msg void OnBnClickedMfcbuttonClientControl();
-	afx_msg void OnBnClickedCheckShowSystemFiles();
-	afx_msg void OnBnClickedCheckShowHiddenFiles();
-	afx_msg void OnCbnSelchangeComboViewMode();
-	// Dir Tree View에서 선택된 item이 바뀌었을 때 호출되는 함수.
-	afx_msg void OnTvnSelchangedTreeDirectory(NMHDR *pNMHDR, LRESULT *pResult);
-	// File List View에서 더블클릭이 발생했을 때 호출되는 함수.
-	afx_msg void OnNMDblclkListFile(NMHDR *pNMHDR, LRESULT *pResult);
+    DECLARE_MESSAGE_MAP()
+    afx_msg void OnBnClickedMfcbuttonClientControl();
+    afx_msg void OnBnClickedCheckShowSystemFiles();
+    afx_msg void OnBnClickedCheckShowHiddenFiles();
+    afx_msg void OnCbnSelchangeComboViewMode();
+    // Dir Tree View에서 선택된 item이 바뀌었을 때 호출되는 함수.
+    afx_msg void OnTvnSelchangedTreeDirectory(NMHDR *pNMHDR, LRESULT *pResult);
+    // File List View에서 더블클릭이 발생했을 때 호출되는 함수.
+    afx_msg void OnNMDblclkListFile(NMHDR *pNMHDR, LRESULT *pResult);
 
 private:
-	///////////////////////////////////////////////////////////////////////////////
-	void ConnectToServer_();
-	void DisconnectToServer_();
+    ///////////////////////////////////////////////////////////////////////////////
+    void ConnectToServer_();
+    void DisconnectToServer_();
 
-	// 모든 View를 초기화하는 함수.
-	int InitializeView_();
-	// 모든 View를 비우는 함수.
-	void ClearView_();
+    // 모든 View를 초기화하는 함수.
+    int InitializeView_();
+    // 모든 View를 비우는 함수.
+    void ClearView_();
 
-	// parentTree의 자식트리들을 전부 삭제하는 함수.
-	// (자기자신은 삭제하지 않는다.)
-	void ClearFileTreeChilds_(FileTree* parentTree);
+    // parentTree의 자식트리들을 전부 삭제하는 함수.
+    // (자기자신은 삭제하지 않는다.)
+    void ClearFileTreeChilds_(FileTree* parentTree);
 
-	// Dir Tree View를 root부터 몽땅 업데이트하는 함수.
-	void UpdateDirTreeViewAll_();
-	// Dir Tree View에서 parentTree에 해당하는 item밑으로 업데이트하는 함수.
-	void UpdateDirTreeView_(FileTree* parentTree);
-	// File List View를 업데이트하는 함수.
-	void UpdateFileListView_();
+    // Dir Tree View를 root부터 몽땅 업데이트하는 함수.
+    void UpdateDirTreeViewAll_();
+    // Dir Tree View에서 parentTree에 해당하는 item밑으로 업데이트하는 함수.
+    void UpdateDirTreeView_(FileTree* parentTree);
+    // File List View를 업데이트하는 함수.
+    void UpdateFileListView_();
 
-	// 파일이 View들에서 보여져야하는 지 아닌지를 반환하는 함수.
-	bool CheckFileShouldBeShown_(FileTree* fileTree);
+    // 파일이 View들에서 보여져야하는 지 아닌지를 반환하는 함수.
+    bool CheckFileShouldBeShown_(FileTree* fileTree);
 
-	///////////////////////////////////////////////////////////////////////////////
-	remoteFileExplorer::client::RemoteFileExplorer remoteFileExplorer_;
-	ClientStatus status_{ ClientStatus::Disconnected };
+    ///////////////////////////////////////////////////////////////////////////////
+    remoteFileExplorer::client::RemoteFileExplorer remoteFileExplorer_;
+    ClientStatus status_{ ClientStatus::Disconnected };
 
-	CIPAddressCtrl ipAddressCtrl_;
-	CEdit portEdit_;
-	CMFCButton controlButton_;
+    CIPAddressCtrl ipAddressCtrl_;
+    CEdit portEdit_;
+    CMFCButton controlButton_;
 
-	FileTree fileTreeVRoot_; // 가상의 root. 이 root 밑에는 drive들이 위치한다.
-	CTreeCtrl dirTreeControl_;
-	HICON hDriveIcon_;  // Dir Tree View에서 drive에 보여질 아이콘.
-	HICON hFolderIcon_; // Dir Tree View에서 folder에 보여진 아이콘.
+    FileTree fileTreeVRoot_; // 가상의 root. 이 root 밑에는 drive들이 위치한다.
+    CTreeCtrl dirTreeControl_;
+    HICON hDriveIcon_;  // Dir Tree View에서 drive에 보여질 아이콘.
+    HICON hFolderIcon_; // Dir Tree View에서 folder에 보여진 아이콘.
 
-	CListCtrl fileListControl_;
-	// 현재 File List View가 나타내고 있는 directory를 의미한다.
-	FileTree* curDirTree_{ nullptr };
+    CListCtrl fileListControl_;
+    // 현재 File List View가 나타내고 있는 directory를 의미한다.
+    FileTree* curDirTree_{ nullptr };
 
-	CComboBox viewModeComboBox_;
+    CComboBox viewModeComboBox_;
 
-	CButton systemFileCheckBox_;
-	bool systemFileShow_;
-	CButton hiddenFileCheckBox_;
-	bool hiddenFileShow_;
+    CButton systemFileCheckBox_;
+    bool systemFileShow_;
+    CButton hiddenFileCheckBox_;
+    bool hiddenFileShow_;
 };
 
 } // namespace client

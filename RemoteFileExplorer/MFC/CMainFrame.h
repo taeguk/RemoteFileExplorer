@@ -9,23 +9,23 @@ namespace mfc
 ///////////////////////////////////////////////////////////////////////////////
 class CMainFrame : public CFrameWnd
 {
-	DECLARE_DYNAMIC(CMainFrame)
+    DECLARE_DYNAMIC(CMainFrame)
 
 public:
     CMainFrame();
-	virtual ~CMainFrame();
+    virtual ~CMainFrame();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+    virtual void AssertValid() const;
+    virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
     virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
     virtual BOOL OnCmdMsg(
-		UINT nID,
-		int nCode,
-		void* pExtra,
-		AFX_CMDHANDLERINFO* pHandlerInfo);
+        UINT nID,
+        int nCode,
+        void* pExtra,
+        AFX_CMDHANDLERINFO* pHandlerInfo);
 
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnSetFocus(CWnd *pOldWnd);
@@ -34,8 +34,8 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-	CStatusBar statusBar_;
-	CMainView* mainView_;
+    CStatusBar statusBar_;
+    CMainView* mainView_;
 };
 
 } // namespace mfc

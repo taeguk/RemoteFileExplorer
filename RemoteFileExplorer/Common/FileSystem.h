@@ -29,26 +29,26 @@ enum class FileAttribute : std::uint8_t
 inline FileAttribute operator|(FileAttribute lhs, FileAttribute rhs)
 {
     return static_cast<FileAttribute>(
-		utils::to_underlying(lhs) | utils::to_underlying(rhs));
+        utils::to_underlying(lhs) | utils::to_underlying(rhs));
 }
 
 inline FileAttribute& operator|=(FileAttribute& lhs, FileAttribute rhs)
 {
     lhs = static_cast<FileAttribute>(
-		utils::to_underlying(lhs) | utils::to_underlying(rhs));
+        utils::to_underlying(lhs) | utils::to_underlying(rhs));
     return lhs;
 }
 
 inline FileAttribute operator&(FileAttribute lhs, FileAttribute rhs)
 {
     return static_cast<FileAttribute>(
-		utils::to_underlying(lhs) & utils::to_underlying(rhs));
+        utils::to_underlying(lhs) & utils::to_underlying(rhs));
 }
 
 inline FileAttribute& operator&=(FileAttribute lhs, FileAttribute rhs)
 {
     lhs = static_cast<FileAttribute>(
-		utils::to_underlying(lhs) & utils::to_underlying(rhs));
+        utils::to_underlying(lhs) & utils::to_underlying(rhs));
     return lhs;
 }
 

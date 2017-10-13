@@ -17,53 +17,53 @@ namespace server
 ///////////////////////////////////////////////////////////////////////////////
 Server::~Server()
 {
-	if (started_)
-	{
-		Stop();
-	}
+    if (started_)
+    {
+        Stop();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 int Server::Start(
-	std::uint16_t port,
-	std::size_t threadNumber /* 0 means default number */)
+    std::uint16_t port,
+    std::size_t threadNumber /* 0 means default number */)
 {
-	std::lock_guard<decltype(mutex_)> lk(mutex_);
+    std::lock_guard<decltype(mutex_)> lk(mutex_);
 
-	if (started_)
-		return -1;
+    if (started_)
+        return -1;
 
-	// client handler thread의 개수는 기본적으로 processor 개수의 2배이다.
-	if (threadNumber == 0)
-	{
-		SYSTEM_INFO systemInfo;
-		GetSystemInfo(&systemInfo);
-		threadNumber = systemInfo.dwNumberOfProcessors * 2;
-	}
+    // client handler thread의 개수는 기본적으로 processor 개수의 2배이다.
+    if (threadNumber == 0)
+    {
+        SYSTEM_INFO systemInfo;
+        GetSystemInfo(&systemInfo);
+        threadNumber = systemInfo.dwNumberOfProcessors * 2;
+    }
 
-	listenerThread_.reset(
-		new network::ListenerThread(
-			port,
-			threadNumber,
-			fileExplorerService_->Clone()));
+    listenerThread_.reset(
+        new network::ListenerThread(
+            port,
+            threadNumber,
+            fileExplorerService_->Clone()));
 
-	started_ = true;
+    started_ = true;
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 int Server::Stop()
 {
-	std::lock_guard<decltype(mutex_)> lk(mutex_);
+    std::lock_guard<decltype(mutex_)> lk(mutex_);
 
-	if (!started_)
-		return -1;
+    if (!started_)
+        return -1;
 
-	listenerThread_ = nullptr;
-	started_ = false;
+    listenerThread_ = nullptr;
+    started_ = false;
 
-	return 0;
+    return 0;
 }
 
 } // namespace server

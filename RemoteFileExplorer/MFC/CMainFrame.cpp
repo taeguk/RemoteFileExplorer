@@ -54,17 +54,17 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     }
     statusBar_.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 
-	CCreateContext ccx;
-	ccx.m_pNewViewClass = RUNTIME_CLASS(CMainView);
+    CCreateContext ccx;
+    ccx.m_pNewViewClass = RUNTIME_CLASS(CMainView);
 
-	mainView_ = DYNAMIC_DOWNCAST(CMainView, CreateView(&ccx));
+    mainView_ = DYNAMIC_DOWNCAST(CMainView, CreateView(&ccx));
 
-	mainView_->ShowWindow(SW_SHOW);
-	mainView_->OnInitialUpdate();
+    mainView_->ShowWindow(SW_SHOW);
+    mainView_->OnInitialUpdate();
 
-	SetActiveView(mainView_);
+    SetActiveView(mainView_);
 
-	mainView_->ResizeParentToFit(TRUE);
+    mainView_->ResizeParentToFit(TRUE);
 
     return 0;
 }
@@ -79,8 +79,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
     cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
     cs.lpszClass = AfxRegisterWndClass(0);
-	cs.cx = 700;
-	cs.cy = 500;
+    cs.cx = 700;
+    cs.cy = 500;
     return TRUE;
 }
 
@@ -107,10 +107,10 @@ void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 
 ///////////////////////////////////////////////////////////////////////////////
 BOOL CMainFrame::OnCmdMsg(
-	UINT nID,
-	int nCode,
-	void* pExtra,
-	AFX_CMDHANDLERINFO* pHandlerInfo)
+    UINT nID,
+    int nCode,
+    void* pExtra,
+    AFX_CMDHANDLERINFO* pHandlerInfo)
 {
     // 뷰에서 첫째 크랙이 해당 명령에 나타나도록 합니다.
     if (mainView_->OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))

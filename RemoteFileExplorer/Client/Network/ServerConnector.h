@@ -19,18 +19,18 @@ namespace network
 class ServerConnector final
 {
 public:
-	~ServerConnector();
-	int Connect(std::uint8_t ipAddress[4], std::uint16_t port);
-	int Disconnect();
-	int Communicate(
-		std::uint8_t* buffer,
-		std::size_t& bufferSize,
-		std::size_t maxBufferSize);
+    ~ServerConnector();
+    int Connect(std::uint8_t ipAddress[4], std::uint16_t port);
+    int Disconnect();
+    int Communicate(
+        std::uint8_t* buffer,
+        std::size_t& bufferSize,
+        std::size_t maxBufferSize);
 
 private:
-	SOCKET hSocket_;
-	std::mutex mutex_;
-	bool connected_{ false };
+    SOCKET hSocket_;
+    std::mutex mutex_;
+    bool connected_{ false };
 };
 
 } // namespace network

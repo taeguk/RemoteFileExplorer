@@ -21,7 +21,7 @@ namespace /*unnamed*/
 class CAboutDlg : public CDialogEx
 {
 public:
-	CAboutDlg();
+    CAboutDlg();
 
     // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -133,15 +133,15 @@ int CRemoteFileExplorerApp::ExitInstance()
 
 ///////////////////////////////////////////////////////////////////////////////
 BEGIN_MESSAGE_MAP(CRemoteFileExplorerApp, CWinApp)
-	ON_COMMAND(ID_APP_ABOUT, &CRemoteFileExplorerApp::OnAppAbout)
+    ON_COMMAND(ID_APP_ABOUT, &CRemoteFileExplorerApp::OnAppAbout)
 END_MESSAGE_MAP()
 
 ///////////////////////////////////////////////////////////////////////////////
 // 대화 상자를 실행하기 위한 응용 프로그램 명령입니다.
 void CRemoteFileExplorerApp::OnAppAbout()
 {
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
+    CAboutDlg aboutDlg;
+    aboutDlg.DoModal();
 }
 
 } // namespace mfc

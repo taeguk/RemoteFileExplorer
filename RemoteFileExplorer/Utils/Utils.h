@@ -11,7 +11,7 @@ namespace utils
 ///////////////////////////////////////////////////////////////////////////////
 template <typename E>
 constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {
-	return static_cast<typename std::underlying_type<E>::type>(e);
+    return static_cast<typename std::underlying_type<E>::type>(e);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,24 +26,24 @@ template <typename Functor>
 class RAIIWrapper
 {
 public:
-	explicit RAIIWrapper(Functor&& functor)
-		: functor_(std::move(functor))
-	{
-	}
-	~RAIIWrapper()
-	{
-		functor_();
-	}
+    explicit RAIIWrapper(Functor&& functor)
+        : functor_(std::move(functor))
+    {
+    }
+    ~RAIIWrapper()
+    {
+        functor_();
+    }
 
 private:
-	Functor functor_;
+    Functor functor_;
 };
 
 template <typename Functor>
 auto CreateRAIIWrapper(Functor&& functor)
-	-> RAIIWrapper<Functor>
+    -> RAIIWrapper<Functor>
 {
-	return RAIIWrapper<Functor>(std::forward<Functor>(functor));
+    return RAIIWrapper<Functor>(std::forward<Functor>(functor));
 }
 
 } // namespace utils

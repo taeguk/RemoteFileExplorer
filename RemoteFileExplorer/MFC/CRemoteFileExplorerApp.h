@@ -19,11 +19,11 @@ public:
     virtual BOOL InitInstance() override;
     virtual int ExitInstance() override;
 
-	UINT  m_nAppLook;
+    UINT  m_nAppLook;
 
 protected:
-	afx_msg void OnAppAbout();
-	DECLARE_MESSAGE_MAP()
+    afx_msg void OnAppAbout();
+    DECLARE_MESSAGE_MAP()
 };
 
 extern CRemoteFileExplorerApp theApp;
