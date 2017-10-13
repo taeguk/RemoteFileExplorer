@@ -107,64 +107,68 @@ BEGIN_MESSAGE_MAP(CClientDialog, CDialogEx)
 		&CClientDialog::OnNMDblclkListFile)
 END_MESSAGE_MAP()
 
+void CClientDialog::ConnectToServer_()
+{
+	std::uint8_t ipAddress[4];
+	std::int16_t port;
+
+	// Get IP Address
+	{
+		// TODO: IP Address Check
+		ipAddressCtrl_.GetAddress(
+			ipAddress[0], ipAddress[1], ipAddress[2], ipAddress[3]);
+	}
+
+	// Get Port Number
+	{
+		CString cstr;
+		portEdit_.GetWindowTextW(cstr);
+
+		int len = cstr.GetLength();
+		if (len == 0 || len > 5)
+		{
+			AfxMessageBox(_T("Invalid Port Number!"));
+			return;
+		}
+		int num = _ttoi(cstr.GetBuffer());
+		if (num > UINT16_MAX)
+		{
+			AfxMessageBox(_T("Invalid Port Number!"));
+			return;
+		}
+		port = static_cast<std::uint16_t>(num);
+	}
+
+	if (remoteFileExplorer_.Connect(ipAddress, port) != 0)
+	{
+		AfxMessageBox(_T("Fail to connect the server!"));
+		return;
+	}
+
+	controlButton_.SetWindowTextW(_T("Disconnect"));
+	status_ = ClientStatus::Connected;
+
+	if (InitializeView_() != 0)
+		DisconnectToServer_();
+}
+
+void CClientDialog::DisconnectToServer_()
+{
+	controlButton_.SetWindowTextW(_T("Connect"));
+	status_ = ClientStatus::Disconnected;
+	ClearView_();
+	(void) remoteFileExplorer_.Disconnect(); // 반드시 맨 마지막에 하기.
+}
+
 void CClientDialog::OnBnClickedMfcbuttonClientControl()
 {
 	if (status_ == ClientStatus::Connected)
 	{
-		controlButton_.SetWindowTextW(_T("Connect"));
-		status_ = ClientStatus::Disconnected;
-		ClearView_();
-		(void) remoteFileExplorer_.Disconnect(); // 반드시 맨 마지막에 하기.
+		DisconnectToServer_();
 	}
 	else if (status_ == ClientStatus::Disconnected)
 	{
-		std::uint8_t ipAddress[4];
-		std::int16_t port;
-
-		// Get IP Address
-		{
-			// TODO: IP Address Check
-			ipAddressCtrl_.GetAddress(
-				ipAddress[0], ipAddress[1], ipAddress[2], ipAddress[3]);
-		}
-
-		// Get Port Number
-		{
-			CString cstr;
-			portEdit_.GetWindowTextW(cstr);
-
-			int len = cstr.GetLength();
-			if (len == 0 || len > 5)
-			{
-				AfxMessageBox(_T("Invalid Port Number!"));
-				return;
-			}
-			int num = _ttoi(cstr.GetBuffer());
-			if (num > UINT16_MAX)
-			{
-				AfxMessageBox(_T("Invalid Port Number!"));
-				return;
-			}
-			port = static_cast<std::uint16_t>(num);
-		}
-
-		if (remoteFileExplorer_.Connect(ipAddress, port) != 0)
-		{
-			AfxMessageBox(_T("Fail to connect the server!"));
-			return;
-		}
-
-		if (InitializeView_() != 0)
-		{
-			AfxMessageBox(_T("Fail to initialize view!"));
-			remoteFileExplorer_.Disconnect();
-			ClearView_();
-			return;
-		}
-
-		controlButton_.SetWindowTextW(_T("Disconnect"));
-
-		status_ = ClientStatus::Connected;
+		ConnectToServer_();
 	}
 }
 
@@ -172,22 +176,22 @@ void CClientDialog::OnBnClickedCheckShowSystemFiles()
 {
 	systemFileShow_ = !systemFileShow_;
 	CheckDlgButton(IDC_CHECK_SHOW_SYSTEM_FILES, systemFileShow_);
-	UpdateDirTreeViewAll();
-	UpdateFileListView();
+	UpdateDirTreeView_All_();
+	UpdateFileListView_();
 }
 
 void CClientDialog::OnBnClickedCheckShowHiddenFiles()
 {
 	hiddenFileShow_ = !hiddenFileShow_;
 	CheckDlgButton(IDC_CHECK_SHOW_HIDDEN_FILES, hiddenFileShow_);
-	UpdateDirTreeViewAll();
-	UpdateFileListView();
+	UpdateDirTreeView_All_();
+	UpdateFileListView_();
 }
 
 // TODO: 정리.
 HICON GetFileIcon(const CString& fileName, ViewMode viewMode, bool isDir);
 
-void CClientDialog::ClearFileTreeChilds(FileTree* parentTree)
+void CClientDialog::ClearFileTreeChilds_(FileTree* parentTree)
 {
 	assert(parentTree != nullptr);
 
@@ -196,7 +200,7 @@ void CClientDialog::ClearFileTreeChilds(FileTree* parentTree)
 
 	for (const auto& child : parentTree->childs)
 	{
-		ClearFileTreeChilds(child.get());
+		ClearFileTreeChilds_(child.get());
 
 		if (child->hTreeItem != nullptr)
 		{
@@ -204,7 +208,7 @@ void CClientDialog::ClearFileTreeChilds(FileTree* parentTree)
 			{
 				curDirTree_ = nullptr;
 				dirTreeControl_.SelectItem(nullptr);
-				UpdateFileListView();
+				UpdateFileListView_();
 			}
 			dirTreeControl_.DeleteItem(child->hTreeItem);
 		}
@@ -231,7 +235,7 @@ void CClientDialog::OnTvnSelchangedTreeDirectory(NMHDR *pNMHDR, LRESULT *pResult
 	if (fileTree->beingDeleted)
 		assert(false);
 
-	ClearFileTreeChilds(fileTree);
+	ClearFileTreeChilds_(fileTree);
 
 	// 원격지 폴더내의 모든 파일 정보를 가져온다.
 	// 폴더에 파일이 많을 경우, 한 번에 가져올 수 없으므로,
@@ -241,12 +245,21 @@ void CClientDialog::OnTvnSelchangedTreeDirectory(NMHDR *pNMHDR, LRESULT *pResult
 
 	do
 	{
-		if (remoteFileExplorer_.GetDirectoryInfo(
-			fileTree->fullPath,
-			offset,
-			dir) != 0)
-		{
-			AfxMessageBox(_T("Fail to get directory information."));
+		using remoteFileExplorer::client::RPCException;
+
+		try {
+			if (remoteFileExplorer_.GetDirectoryInfo(
+				fileTree->fullPath,
+				offset,
+				dir) != 0)
+			{
+				AfxMessageBox(_T("Fail to get directory information."));
+				return;
+			}
+		}
+		catch (const RPCException& e) {
+			AfxMessageBox(CString(e.what()));
+			DisconnectToServer_();
 			return;
 		}
 
@@ -272,17 +285,17 @@ void CClientDialog::OnTvnSelchangedTreeDirectory(NMHDR *pNMHDR, LRESULT *pResult
 	} while (dir.fileInfos.size() >= 1);
 
 	// Directory Tree View를 업데이트한다.
-	UpdateDirTreeView(fileTree);
+	UpdateDirTreeView_(fileTree);
 
 	curDirTree_ = fileTree;
 
 	dirTreeControl_.Expand(hItem, TVE_EXPAND);
-	UpdateFileListView();
+	UpdateFileListView_();
 }
 
 void CClientDialog::OnCbnSelchangeComboViewMode()
 {
-	UpdateFileListView();
+	UpdateFileListView_();
 }
 
 
@@ -320,15 +333,15 @@ void CClientDialog::OnNMDblclkListFile(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
-void CClientDialog::UpdateDirTreeViewAll()
+void CClientDialog::UpdateDirTreeView_All_()
 {
 	for (auto& drive : fileTreeVRoot_.childs)
 	{
-		UpdateDirTreeView(drive.get());
+		UpdateDirTreeView_(drive.get());
 	}
 }
 
-void CClientDialog::UpdateDirTreeView(FileTree* parentTree)
+void CClientDialog::UpdateDirTreeView_(FileTree* parentTree)
 {
 	assert(parentTree->hTreeItem != nullptr);
 
@@ -375,7 +388,7 @@ void CClientDialog::UpdateDirTreeView(FileTree* parentTree)
 		else if (!show && childTree->hTreeItem != nullptr)
 		{
 			// 자식들을 모두 삭제한다.
-			ClearFileTreeChilds(childTree);
+			ClearFileTreeChilds_(childTree);
 
 			// TODO: imageList 관련.
 			dirTreeControl_.DeleteItem(childTree->hTreeItem);
@@ -386,13 +399,13 @@ void CClientDialog::UpdateDirTreeView(FileTree* parentTree)
 		if (show)
 		{
 			// 자식들에 대해서도 재귀적인 알고리즘 수행.
-			UpdateDirTreeView(childTree);
+			UpdateDirTreeView_(childTree);
 			hInsertAfter = childTree->hTreeItem;
 		}
 	}
 }
 
-void CClientDialog::UpdateFileListView()
+void CClientDialog::UpdateFileListView_()
 {
 	// List Control의 Column과 Item들을 모두 지운다.
 	auto headerControl = fileListControl_.GetHeaderCtrl();
@@ -654,11 +667,19 @@ HICON GetFileIcon(const CString& fileName, ViewMode viewMode, bool isDir)
 
 int CClientDialog::InitializeView_()
 {
+	using remoteFileExplorer::client::RPCException;
+
 	std::vector<common::LogicalDrive> drives;
 
-	if (remoteFileExplorer_.GetLogicalDriveInfo(drives) != 0)
-	{
-		AfxMessageBox(_T("Fail to get logical drive informations."));
+	try {
+		if (remoteFileExplorer_.GetLogicalDriveInfo(drives) != 0)
+		{
+			AfxMessageBox(_T("Fail to get logical drive informations."));
+			return -1;
+		}
+	}
+	catch (const RPCException& e) {
+		AfxMessageBox(CString(e.what()));
 		return -1;
 	}
 
@@ -699,9 +720,9 @@ int CClientDialog::InitializeView_()
 
 void CClientDialog::ClearView_()
 {
-	ClearFileTreeChilds(&fileTreeVRoot_);
+	ClearFileTreeChilds_(&fileTreeVRoot_);
 	curDirTree_ = nullptr;
-	UpdateFileListView();
+	UpdateFileListView_();
 }
 
 } // namespace client

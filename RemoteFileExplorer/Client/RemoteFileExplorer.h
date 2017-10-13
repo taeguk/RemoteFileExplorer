@@ -10,7 +10,16 @@ namespace remoteFileExplorer
 namespace client
 {
 ///////////////////////////////////////////////////////////////////////////////
-// Thread Unsafe.
+class RPCException : public std::exception
+{
+public:
+	const char* what() const noexcept
+	{
+		return "Can't communicate with a server.";
+	}
+};
+
+///////////////////////////////////////////////////////////////////////////////
 class RemoteFileExplorer final : public common::FileExplorerInterface
 {
 public:

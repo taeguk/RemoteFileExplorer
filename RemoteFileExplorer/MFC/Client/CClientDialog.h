@@ -68,18 +68,22 @@ protected:
 
 private:
 	//
+	void ConnectToServer_();
+	void DisconnectToServer_();
+
+	//
 	int InitializeView_();
 	void ClearView_();
 
 	//
-	void ClearFileTreeChilds(FileTree* parentTree);
+	void ClearFileTreeChilds_(FileTree* parentTree);
 
 	//
-	void UpdateDirTreeViewAll();
-	void UpdateDirTreeView(FileTree* parentTree);
+	void UpdateDirTreeView_All_();
+	void UpdateDirTreeView_(FileTree* parentTree);
 
 	//
-	void UpdateFileListView();
+	void UpdateFileListView_();
 
 	//
 	remoteFileExplorer::client::RemoteFileExplorer remoteFileExplorer_;

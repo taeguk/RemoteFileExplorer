@@ -55,12 +55,8 @@ int ClientHandlerThread::ThreadMain_()
 		if (!success || bytesTransferred == 0) //EOF 전송시.
 		{
 			// 순서 중요!!!
-			if (fDestroyClientSession_(hSocket) != 0)
-			{
-
-			}
-			closesocket(hSocket);
-			//SocketBuffer::ReleaseBuffer(socketBuffer);
+			(void) fDestroyClientSession_(hSocket);
+			(void) closesocket(hSocket);
 			continue;
 		}
 
@@ -105,7 +101,9 @@ int ClientHandlerThread::ThreadMain_()
 				sendBuffer,
 				&sendBufferSize) != 0)
 			{
-				// Ignore failure.
+				// 순서 중요!!!
+				(void) fDestroyClientSession_(hSocket);
+				(void) closesocket(hSocket);
 				continue;
 			}
 
