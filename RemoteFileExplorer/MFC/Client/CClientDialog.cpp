@@ -612,7 +612,7 @@ void CClientDialog::UpdateFileListView_()
                 &childTree->f.modifiedDate)), "\n"));
             auto typeString = isDir ? _T("Directory") : _T("File");
             auto sizeString = isDir ? CString(_T("")) :
-                CString((std::to_string(childTree->f.fileSize) + " Bytes").c_str());
+                CString((std::to_string(childTree->f.fileSize) + " B").c_str());
 
             int nIndex = fileListControl_.InsertItem(nItem, fileName, nImage);
             fileListControl_.SetItemText(nIndex, 1, dateString);
@@ -621,6 +621,17 @@ void CClientDialog::UpdateFileListView_()
             fileListControl_.SetItemData(nItem++, (DWORD_PTR) childTree.get());
         }
         fileListControl_.SetImageList(imageList, LVSIL_SMALL);
+
+        // Column Width Á¶Á¤.
+        assert(fileListControl_.GetHeaderCtrl()->GetItemCount() == 4);
+        const double rate[4] = { 0.40, 0.25, 0.15, 0.2 };
+        CRect rect;
+        fileListControl_.GetClientRect(rect);
+        for (int i = 0; i < 4; ++i)
+            fileListControl_.SetColumnWidth(i, rect.Width() * rate[i]);
+
+        fileListControl_.SetRedraw(true);
+        fileListControl_.UpdateWindow();
     }
 }
 

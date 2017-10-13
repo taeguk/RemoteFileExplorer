@@ -9,31 +9,37 @@ namespace server
 namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
-ListenerThread::ListenerThread(
+ListenerThread::~ListenerThread()
+{
+    if (isStarted_)
+    {
+        // 먼저, client handler thread들을 종료시킨다.
+        handlerThreads_.clear();
+
+        // 그다음, listener thread를 종료시킨다.
+        terminatedFlag_.store(true);
+        listenerThread_.join();
+
+        closesocket(hServerSocket_);
+        CloseHandle(hCompletionPort_);
+
+        (void) WSACleanup();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+int ListenerThread::Start(
     std::uint16_t port,
     std::size_t threadNumber,
     std::unique_ptr<FileExplorerServiceInterface> fileExplorerService)
-    : port_(port),
-      threadNumber_(threadNumber),
-      fileExplorerService_(std::move(fileExplorerService))
 {
-    listenerThread_ = std::thread(&ListenerThread::ThreadMain_, this);
-}
+    if (isStarted_)
+        return -1;
 
-///////////////////////////////////////////////////////////////////////////////
-ListenerThread::~ListenerThread()
-{
-    // 먼저, client handler thread들을 종료시킨다.
-    handlerThreads_.clear();
+    port_ = port;
+    threadNumber_ = threadNumber;
+    fileExplorerService_ = std::move(fileExplorerService);
 
-    // 그다음, listener thread를 종료시킨다.
-    terminatedFlag_.store(true);
-    listenerThread_.join();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-int ListenerThread::ThreadMain_()
-{
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
         return -1;
@@ -53,26 +59,55 @@ int ListenerThread::ThreadMain_()
             });
     }
 
-    SOCKET hServerSocket =
+    // Server Socket (Listener Socket) 생성.
+    hServerSocket_ =
         WSASocket(AF_INET, SOCK_STREAM, 0, nullptr, 0, WSA_FLAG_OVERLAPPED);
 
     SOCKADDR_IN serverAddress;
+    memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddress.sin_port = htons(port_);
 
-    bind(hServerSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress));
+    // 바인드 시, Already In Use 문제 회피.
+    int option = 1;
+    setsockopt(
+        hServerSocket_,
+        SOL_SOCKET,
+        SO_REUSEADDR,
+        (const char *) &option,
+        sizeof(option));
 
-    listen(hServerSocket, static_cast<int>(handlerThreads_.size()));
+    // 바인드.
+    if (bind(
+        hServerSocket_,
+        (SOCKADDR*) &serverAddress,
+        sizeof(serverAddress)) == SOCKET_ERROR)
+    {
+        return -1;
+    }
+
+    listen(hServerSocket_, static_cast<int>(handlerThreads_.size()));
 
     // 소켓을 non-blocking으로 설정.
     u_long cmdArg = 1;
-    if (ioctlsocket(hServerSocket, FIONBIO, &cmdArg) == SOCKET_ERROR)
+    if (ioctlsocket(hServerSocket_, FIONBIO, &cmdArg) == SOCKET_ERROR)
         return -1;
 
+    // 본격적인 Listen Loop 시작.
+    listenerThread_ = std::thread(&ListenerThread::ListenLoop_, this);
+
+    isStarted_ = true;
+
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+int ListenerThread::ListenLoop_()
+{
     fd_set fdSet;
     FD_ZERO(&fdSet);
-    FD_SET(hServerSocket, &fdSet);
+    FD_SET(hServerSocket_, &fdSet);
     timeval timeout;
     timeout.tv_sec = 0;
     timeout.tv_usec = 10 * 1000; // 10ms
@@ -84,7 +119,7 @@ int ListenerThread::ThreadMain_()
         int addrLen = sizeof(clientAddress);
 
         FD_ZERO(&fdSet);
-        FD_SET(hServerSocket, &fdSet);
+        FD_SET(hServerSocket_, &fdSet);
 
         int selectRet = select(1, &fdSet, nullptr, nullptr, &timeout);
 
@@ -94,7 +129,7 @@ int ListenerThread::ThreadMain_()
             return -1; // 에러.
 
         hClientSocket = accept(
-            hServerSocket,
+            hServerSocket_,
             (SOCKADDR*) &clientAddress,
             &addrLen);
 
@@ -153,10 +188,6 @@ int ListenerThread::ThreadMain_()
             continue;
         }
     }
-
-    closesocket(hServerSocket);
-
-    (void) WSACleanup();
 
     return 0;
 }

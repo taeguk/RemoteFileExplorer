@@ -1,4 +1,4 @@
-#include "Server/Network/Server.h"
+#include "Server/Server.h"
 
 #include <winsock2.h>
 
@@ -41,11 +41,15 @@ int Server::Start(
         threadNumber = systemInfo.dwNumberOfProcessors * 2;
     }
 
-    listenerThread_.reset(
-        new network::ListenerThread(
-            port,
-            threadNumber,
-            fileExplorerService_->Clone()));
+    listenerThread_.release();
+    listenerThread_ = std::make_unique<network::ListenerThread>();
+    if (listenerThread_->Start(
+        port,
+        threadNumber,
+        fileExplorerService_->Clone()) != 0)
+    {
+        return -1;
+    }
 
     started_ = true;
 
@@ -60,7 +64,7 @@ int Server::Stop()
     if (!started_)
         return -1;
 
-    listenerThread_ = nullptr;
+    listenerThread_.release();
     started_ = false;
 
     return 0;

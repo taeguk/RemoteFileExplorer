@@ -212,7 +212,7 @@
     <ClInclude Include="Server\Network\ClientSession.h" />
     <ClInclude Include="Server\Network\ListenerThread.h" />
     <ClInclude Include="Server\Network\IOContext.h" />
-    <ClInclude Include="Server\Network\Server.h" />
+    <ClInclude Include="Server\Server.h" />
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +234,7 @@
     <ClCompile Include="Server\Network\ClientMessageHandler.cpp" />
     <ClCompile Include="Server\Network\ListenerThread.cpp" />
     <ClCompile Include="Server\Network\IOContext.cpp" />
-    <ClCompile Include="Server\Network\Server.cpp" />
+    <ClCompile Include="Server\Server.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -24,10 +24,7 @@ namespace network
 class ListenerThread final
 {
 public:
-    ListenerThread(
-        std::uint16_t port,
-        std::size_t threadNumber,
-        std::unique_ptr<FileExplorerServiceInterface> fileExplorerService);
+    ListenerThread() = default;
     ~ListenerThread();
 
     // Non-copyable and Non-moveable.
@@ -36,8 +33,13 @@ public:
     ListenerThread(ListenerThread&&) = delete;
     ListenerThread& operator=(ListenerThread&&) = delete;
 
+    int Start(
+        std::uint16_t port,
+        std::size_t threadNumber,
+        std::unique_ptr<FileExplorerServiceInterface> fileExplorerService);
+
 private:
-    int ThreadMain_();
+    int ListenLoop_();
 
     int DestroyClientSession(SOCKET hSocket);
 
@@ -48,6 +50,8 @@ private:
     std::map<SOCKET, ClientSession> sessionMap_;
     std::mutex sessionMapMutex_;
 
+    std::atomic<bool> isStarted_{ false };
+    SOCKET hServerSocket_;
     HANDLE hCompletionPort_;
 
     std::vector<ClientHandlerThread> handlerThreads_;

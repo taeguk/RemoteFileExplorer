@@ -78,6 +78,7 @@ void CServerDialog::OnBnClickedMfcbuttonServerControl()
         controlButton_.SetWindowTextW(_T("Run Server"));
 
         status_ = ServerStatus::STOPPED;
+        logListCtrl_.DeleteAllItems();
     }
     else if (status_ == ServerStatus::STOPPED)
     {
@@ -107,6 +108,16 @@ void CServerDialog::OnBnClickedMfcbuttonServerControl()
         controlButton_.SetWindowTextW(_T("Stop Server"));
 
         status_ = ServerStatus::STARTED;
+
+        // Log List Control Column Width Á¶Á¤.
+        assert(logListCtrl_.GetHeaderCtrl()->GetItemCount() == 3);
+        const double rate[3] = { 0.3, 0.55, 0.15 };
+        CRect rect;
+        logListCtrl_.GetClientRect(rect);
+        for (int i = 0; i < 3; ++i)
+            logListCtrl_.SetColumnWidth(i, rect.Width() * rate[i]);
+        logListCtrl_.SetRedraw(true);
+        logListCtrl_.UpdateWindow();
     }
 }
 

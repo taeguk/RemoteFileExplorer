@@ -6,7 +6,7 @@
 
 #include "MFC/resource.h"
 #include "MFC/Server/FileExplorerWatcher.h"
-#include "Server/Network/Server.h"
+#include "Server/Server.h"
 
 namespace remoteFileExplorer
 {
