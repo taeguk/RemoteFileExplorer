@@ -292,6 +292,10 @@ void CClientDialog::OnNMDblclkListFile(NMHDR *pNMHDR, LRESULT *pResult)
 
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	int nItem = pNMItemActivate->iItem;
+	
+	if (nItem < 0 || nItem >= fileListControl_.GetItemCount())
+		return;
+
 	FileTree* fileTree = (FileTree*)fileListControl_.GetItemData(nItem);
 	
 	assert(fileTree != nullptr);
@@ -331,11 +335,10 @@ void CClientDialog::UpdateDirTreeView(FileTree* parentTree)
 	CImageList* imageList = dirTreeControl_.GetImageList(TVSIL_NORMAL);
 
 	HTREEITEM hParent = parentTree->hTreeItem;
-	HTREEITEM hInsertAfter = TVI_LAST;
+	HTREEITEM hInsertAfter = TVI_FIRST;
 	auto childCount = parentTree->childs.size();
 
-	// 역순으로 iterate 한다. (hInsertAfter 때문에)
-	for (int i = childCount - 1; i >= 0; --i)
+	for (int i = 0; i < childCount; ++i)
 	{
 		FileTree* childTree = parentTree->childs[i].get();
 
@@ -526,58 +529,73 @@ void CClientDialog::UpdateFileListView()
 // TODO: 정리.
 HICON GetFileIcon(const CString& fileName, ViewMode viewMode, bool isDir)
 {
-	// (extension, view mode, isDir) -> icon handle 로의 mapping.
-	static std::map<std::pair<CString, ViewMode>, HICON> fileIconMap;
-	static std::map<ViewMode, HICON> dirIconMap;
+	// (extension, icon level, isDir) -> icon handle 로의 mapping.
+	static std::map<std::pair<CString, UINT>, HICON> fileIconMap;
+	static std::map<UINT, HICON> dirIconMap;
+
+	UINT orgIconLevel;
+
+	switch (viewMode)
+	{
+	case ViewMode::BigIcon:
+		orgIconLevel = 0;
+		break;
+	case ViewMode::Icon:
+		orgIconLevel = 1;
+		break;
+	case ViewMode::Simple:
+	case ViewMode::Report:
+	default:
+		orgIconLevel = 2;
+	}
 
 	CString extension = _T("dummy");
 
-	if (isDir)
-	{
-		auto it = dirIconMap.find(viewMode);
-		if (it != std::end(dirIconMap))
-			return it->second;
-	}
-	else
+	if (!isDir)
 	{
 		// Parse extension from fileName
 		int pos = fileName.ReverseFind('.');
 		if (pos != -1)
-			extension = fileName.Right(pos);
-
-		auto it = fileIconMap.find(std::make_pair(extension, viewMode));
-		if (it != std::end(fileIconMap))
-			return it->second;
+			extension = fileName.Right(fileName.GetLength() - pos).MakeLower();
 	}
 
 	HICON hIcon = nullptr;
 	SHFILEINFO sfi = { 0, };
 	UINT flag = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES;
 
-	const UINT IconSizeFlagMax = 4;
+	const UINT IconSizeFlagMax = 3;
 	const UINT IconSizeFlag[IconSizeFlagMax] = {
-		SHGFI_SYSICONINDEX, SHGFI_SYSICONINDEX, SHGFI_LARGEICON, SHGFI_SMALLICON
+		SHGFI_SYSICONINDEX, SHGFI_LARGEICON, SHGFI_SMALLICON
 	};
-	UINT idx;
-
-	switch (viewMode)
-	{
-	case ViewMode::BigIcon:
-		idx = 1;
-		break;
-	case ViewMode::Icon:
-		idx = 2;
-		break;
-	case ViewMode::Simple:
-	case ViewMode::Report:
-	default:
-		idx = 3;
-	}
 
 	CoInitialize(nullptr);
 
-	for (; idx <= IconSizeFlagMax; ++idx)
+	UINT gotIconLevel = IconSizeFlagMax;
+	for (auto iconLevel = orgIconLevel;
+		hIcon == nullptr && iconLevel <= IconSizeFlagMax;
+		++iconLevel)
 	{
+		if (isDir)
+		{
+			auto it = dirIconMap.find(iconLevel);
+			if (it != std::end(dirIconMap))
+			{
+				hIcon = it->second;
+				gotIconLevel = iconLevel;
+				break;
+			}
+		}
+		else
+		{
+			auto it = fileIconMap.find(std::make_pair(extension, iconLevel));
+			if (it != std::end(fileIconMap))
+			{
+				hIcon = it->second;
+				gotIconLevel = iconLevel;
+				break;
+			}
+		}
+
 		HRESULT hResult = SHGetFileInfo(
 			extension,
 			(isDir ? FILE_ATTRIBUTE_DIRECTORY : FILE_ATTRIBUTE_NORMAL),
@@ -588,30 +606,48 @@ HICON GetFileIcon(const CString& fileName, ViewMode viewMode, bool isDir)
 		if (FAILED(hResult))
 			continue;
 
-		if (IconSizeFlag[idx] == SHGFI_SYSICONINDEX) {
+		if (IconSizeFlag[iconLevel] == SHGFI_SYSICONINDEX) {
 			// Retrieve the system image list.
 			HIMAGELIST* imageList;
 			hResult = SHGetImageList(
-				(idx == 0 ? SHIL_JUMBO : SHIL_EXTRALARGE),
+				SHIL_JUMBO,
 				IID_IImageList,
 				(void**)&imageList);
 
 			if (FAILED(hResult))
+			{
+				DestroyIcon(sfi.hIcon);
 				continue;
+			}
 
 			// Get the icon we need from the list. Note that the HIMAGELIST we retrieved
 			// earlier needs to be casted to the IImageList interface before use.
 			hResult = ((IImageList*)imageList)->GetIcon(sfi.iIcon, ILD_TRANSPARENT, &hIcon);
+
+			if (FAILED(hResult))
+			{
+				DestroyIcon(sfi.hIcon);
+				continue;
+			}
 		}
 		else {
 			hIcon = sfi.hIcon;
 		}
+
+		gotIconLevel = iconLevel;
+		if (isDir)
+			dirIconMap[iconLevel] = hIcon;
+		else
+			fileIconMap[std::make_pair(extension, iconLevel)] = hIcon;
 	}
 
-	if (isDir)
-		dirIconMap[viewMode] = hIcon;
-	else
-		fileIconMap[std::make_pair(extension, viewMode)] = hIcon;
+	while (gotIconLevel-- > orgIconLevel)
+	{
+		if (isDir)
+			dirIconMap[gotIconLevel] = hIcon;
+		else
+			fileIconMap[std::make_pair(extension, gotIconLevel)] = hIcon;
+	}
 
 	return hIcon;
 }
