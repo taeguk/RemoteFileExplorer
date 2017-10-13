@@ -68,6 +68,7 @@ int FileExplorerService::GetLogicalDriveInfo(
 		}
 	}
 
+	// 서비스 수행 사실을 보고한다.
 	watcher_->GetLogicalDriveInfo();
 
 	return 0;
@@ -106,12 +107,10 @@ int FileExplorerService::GetDirectoryInfo(
 		}
 
 		FileInformation fileInfo;
-		//
+
 		fileInfo.fileName = ffd.cFileName;
-		//
 		fileInfo.modifiedDate =
 			filetime_to_time_t(ffd.ftLastWriteTime);
-		//
 		fileInfo.fileAttr = FileAttribute::NoFlag;
 
 		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)
@@ -151,6 +150,7 @@ int FileExplorerService::GetDirectoryInfo(
 
 	FindClose(hFind);
 
+	// 서비스 수행 사실을 보고한다.
 	watcher_->GetDirectoryInfo(path, givenOffset);
 
 	return 0;

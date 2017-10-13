@@ -9,15 +9,15 @@ namespace remoteFileExplorer
 namespace message
 {
 ///////////////////////////////////////////////////////////////////////////////
-int Message::Serialize(std::uint8_t* buffer, std::size_t* bufferSize)
+int Message::Serialize(std::uint8_t* buffer, std::size_t& bufferSize)
 {
-	std::size_t givenBufferSize = *bufferSize;
+	std::size_t givenBufferSize = bufferSize;
 
-	if (SerializeWithMemcpy(buffer, *bufferSize, messageFlag_) != 0)
+	if (SerializeWithMemcpy(buffer, bufferSize, messageFlag_) != 0)
 		return -1;
 
-	// Return the size of serialized data as bufferSize.
-	*bufferSize = givenBufferSize - *bufferSize;
+	// Return the size of serialized data through bufferSize.
+	bufferSize = givenBufferSize - bufferSize;
 
 	return 0;
 }

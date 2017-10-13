@@ -14,6 +14,8 @@ namespace client
 namespace network
 {
 ///////////////////////////////////////////////////////////////////////////////
+// Server와의 연결 및 통신을 담당한다.
+// Thread Safe
 class ServerConnector final
 {
 public:
@@ -22,7 +24,7 @@ public:
 	int Disconnect();
 	int Communicate(
 		std::uint8_t* buffer,
-		std::size_t* bufferSize,
+		std::size_t& bufferSize,
 		std::size_t maxBufferSize);
 
 private:

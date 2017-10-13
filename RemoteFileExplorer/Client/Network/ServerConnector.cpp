@@ -42,8 +42,13 @@ int ServerConnector::Connect(std::uint8_t ipAddress[4], std::uint16_t port)
 	serverAddress.sin_addr.S_un.S_un_b.s_b4 = ipAddress[3];
 	serverAddress.sin_port = htons(port);
 
-	if (connect(hSocket_, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR)
+	if (connect(
+		hSocket_,
+		(SOCKADDR*) &serverAddress,
+		sizeof(serverAddress)) == SOCKET_ERROR)
+	{
 		return -1;
+	}
 
 	connected_ = true;
 
@@ -69,7 +74,7 @@ int ServerConnector::Disconnect()
 ///////////////////////////////////////////////////////////////////////////////
 int ServerConnector::Communicate(
 	std::uint8_t* buffer,
-	std::size_t* bufferSize,
+	std::size_t& bufferSize,
 	std::size_t maxBufferSize)
 {
 	std::lock_guard<decltype(mutex_)> lk(mutex_);
@@ -83,7 +88,8 @@ int ServerConnector::Communicate(
 	DWORD flags = 0;
 
 	// Send the length of message, first.
-	common::message_size_t sendMessageLength = static_cast<common::message_size_t>(*bufferSize);
+	common::message_size_t sendMessageLength =
+		static_cast<common::message_size_t>(bufferSize);
 	wsabuf.buf = reinterpret_cast<char*>(&sendMessageLength);
 	wsabuf.len = sizeof(sendMessageLength);
 	if (WSASend(hSocket_, &wsabuf, 1, &sendBytes,
@@ -94,7 +100,7 @@ int ServerConnector::Communicate(
 
 	// Send the message.
 	wsabuf.buf = reinterpret_cast<char*>(buffer);
-	wsabuf.len = static_cast<ULONG>(*bufferSize);
+	wsabuf.len = static_cast<ULONG>(bufferSize);
 	if (WSASend(hSocket_, &wsabuf, 1, &sendBytes,
 		0, nullptr, nullptr) == SOCKET_ERROR)
 	{
@@ -132,7 +138,7 @@ int ServerConnector::Communicate(
 		wsabuf.len -= recvBytes;
 	}
 
-	*bufferSize = recvMessageLength;
+	bufferSize = recvMessageLength;
 
 	return 0;
 }

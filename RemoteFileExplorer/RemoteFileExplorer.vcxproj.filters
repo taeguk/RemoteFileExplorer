@@ -72,12 +72,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Server\Server.h">
-      <Filter>헤더 파일\Server</Filter>
-    </ClInclude>
     <ClInclude Include="Message\Message.h">
       <Filter>헤더 파일\Message</Filter>
     </ClInclude>
@@ -132,9 +126,6 @@
     <ClInclude Include="Server\Network\ClientHandlerThread.h">
       <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Server\Network\ClientPacketHandler.h">
-      <Filter>헤더 파일\Server\Network</Filter>
-    </ClInclude>
     <ClInclude Include="Server\Network\ClientSession.h">
       <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
@@ -159,11 +150,14 @@
     <ClInclude Include="Common\CommonType.h">
       <Filter>헤더 파일\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Server\Network\ClientMessageHandler.h">
+      <Filter>헤더 파일\Server\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Network\Server.h">
+      <Filter>헤더 파일\Server\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Server\Server.cpp">
-      <Filter>소스 파일\Server</Filter>
-    </ClCompile>
     <ClCompile Include="Message\Message.cpp">
       <Filter>소스 파일\Message</Filter>
     </ClCompile>
@@ -200,9 +194,6 @@
     <ClCompile Include="Server\Network\ListenerThread.cpp">
       <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Server\Network\ClientPacketHandler.cpp">
-      <Filter>소스 파일\Server\Network</Filter>
-    </ClCompile>
     <ClCompile Include="Server\Network\ClientHandlerThread.cpp">
       <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
@@ -219,6 +210,12 @@
       <Filter>소스 파일\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Server\Network\IOContext.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Network\ClientMessageHandler.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Network\Server.cpp">
       <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
   </ItemGroup>

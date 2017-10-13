@@ -8,7 +8,6 @@ namespace remoteFileExplorer
 {
 namespace utils
 {
-
 ///////////////////////////////////////////////////////////////////////////////
 template <typename E>
 constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {
@@ -46,24 +45,6 @@ auto CreateRAIIWrapper(Functor&& functor)
 {
 	return RAIIWrapper<Functor>(std::forward<Functor>(functor));
 }
-
-/*
-///////////////////////////////////////////////////////////////////////////////
-template <typename ElementType>
-class StaticVector
-{
-public:
-	explicit StaticVector(std::size_t count)
-		: count_(count)
-	{
-		void* mem = ::operator new[](count_ * sizeof(ElementType));
-	}
-
-private:
-	ElementType* elements_;
-	std::size_t count_;
-};
-*/
 
 } // namespace utils
 } // namespace remoteFileExplorer

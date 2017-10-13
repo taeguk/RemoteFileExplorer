@@ -18,8 +18,9 @@ namespace server
 {
 namespace network
 {
-// TODO: std::thread 등 STL에 대한 exception 처리도 다 해야하려나...(고통...ㅠㅜ)
 ///////////////////////////////////////////////////////////////////////////////
+// 서버 소켓을 관리하며, Client들의 접속을 대기하고 수락하는 역할을 한다.
+// 그리고 ClientHandlerThread들도 여기서 관리된다.
 class ListenerThread final
 {
 public:
@@ -44,7 +45,8 @@ private:
 	std::uint16_t port_;
 	std::size_t threadNumber_;
 
-	std::map<SOCKET, ClientSession> sessionMap_; // TODO: 이 것에 대한 동기화 추가하기.
+	std::map<SOCKET, ClientSession> sessionMap_;
+	std::mutex sessionMapMutex_;
 
 	HANDLE hCompletionPort_;
 

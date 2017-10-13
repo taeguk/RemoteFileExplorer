@@ -162,12 +162,12 @@ BEGIN
     DEFPUSHBUTTON   "확인",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_MAINVIEW DIALOGEX 0, 0, 244, 183
-STYLE DS_SETFONT | WS_CHILD
-FONT 9, "굴림", 400, 0, 0x0
+IDD_MAINVIEW DIALOGEX 0, 0, 120, 74
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 22, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "Server",IDC_BUTTON_SERVER,0,0,118,183,BS_CENTER | BS_VCENTER
-    PUSHBUTTON      "Client",IDC_BUTTON_CLIENT,121,0,120,183,BS_CENTER | BS_VCENTER
+    PUSHBUTTON      "Server",IDC_BUTTON_SERVER,0,0,60,74,BS_CENTER | BS_VCENTER
+    PUSHBUTTON      "Client",IDC_BUTTON_CLIENT,61,0,59,74,BS_CENTER | BS_VCENTER
 END
 
 IDD_CLIENT DIALOGEX 0, 0, 232, 168
@@ -186,7 +186,7 @@ END
 
 IDD_SERVER DIALOGEX 0, 0, 202, 127
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
-FONT 12, "MS Shell Dlg", 400, 0, 0x1
+FONT 11, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     EDITTEXT        IDC_EDIT_LISTEN_PORT,67,3,67,17,ES_CENTER | ES_NUMBER
     CTEXT           "Port Number",IDC_STATIC_LISTEN_PORT,1,3,63,14,SS_CENTERIMAGE
@@ -217,13 +217,13 @@ BEGIN
     BEGIN
         BLOCK "041204B0"
         BEGIN
-            VALUE "CompanyName", "TODO: <회사 이름>"
+            VALUE "CompanyName", "TAEGUK: <회사 이름>"
             VALUE "FileDescription", "RemoteFileExplorer"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "RemoteFileExplorer.exe"
-            VALUE "LegalCopyright", "TODO: (c) <회사 이름>.  All rights reserved."
+            VALUE "LegalCopyright", "TAEGUK: (c) <회사 이름>.  All rights reserved."
             VALUE "OriginalFilename", "RemoteFileExplorer.exe"
-            VALUE "ProductName", "TODO: <제품 이름>"
+            VALUE "ProductName", "TAEGUK: <제품 이름>"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END
@@ -252,7 +252,6 @@ BEGIN
 
     IDD_MAINVIEW, DIALOG
     BEGIN
-        RIGHTMARGIN, 241
     END
 
     IDD_CLIENT, DIALOG

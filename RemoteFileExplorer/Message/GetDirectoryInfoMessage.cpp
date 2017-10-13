@@ -14,12 +14,14 @@ namespace /*unnamed*/
 } // unnamed namespace
 
 ///////////////////////////////////////////////////////////////////////////////
-int GetDirectoryInfoRequest::Serialize(std::uint8_t* buffer, std::size_t* bufferSize)
+int GetDirectoryInfoRequest::Serialize(
+	std::uint8_t* buffer,
+	std::size_t& bufferSize)
 {
-	std::size_t givenBufferSize = *bufferSize;
+	std::size_t givenBufferSize = bufferSize;
 	std::size_t preSerializedSize = givenBufferSize;
 
-	if (ClientMessage::Serialize(buffer, &preSerializedSize) != 0)
+	if (ClientMessage::Serialize(buffer, preSerializedSize) != 0)
 		return -1;
 
 	std::size_t remainedBufferSize = givenBufferSize - preSerializedSize;
@@ -45,18 +47,20 @@ int GetDirectoryInfoRequest::Serialize(std::uint8_t* buffer, std::size_t* buffer
 	}
 	
 	// Return the size of serialized data as bufferSize.
-	*bufferSize = givenBufferSize - remainedBufferSize;
+	bufferSize = givenBufferSize - remainedBufferSize;
 
 	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int GetDirectoryInfoReply::Serialize(std::uint8_t* buffer, std::size_t* bufferSize)
+int GetDirectoryInfoReply::Serialize(
+	std::uint8_t* buffer,
+	std::size_t& bufferSize)
 {
-	std::size_t givenBufferSize = *bufferSize;
+	std::size_t givenBufferSize = bufferSize;
 	std::size_t preSerializedSize = givenBufferSize;
 
-	if (ServerMessage::Serialize(buffer, &preSerializedSize) != 0)
+	if (ServerMessage::Serialize(buffer, preSerializedSize) != 0)
 		return -1;
 
 	std::size_t remainedBufferSize = givenBufferSize - preSerializedSize;
@@ -111,8 +115,6 @@ int GetDirectoryInfoReply::Serialize(std::uint8_t* buffer, std::size_t* bufferSi
 					return -1;
 			}
 
-			// TODO: 현재 serialization이 "memory endian 방식이 같은 system 끼리만"
-			//       호환되는 잠재적 issue 존재. (다른 곳도)
 			// Put file's type.
 			if (SerializeWithMemcpy(buffer, remainedBufferSize, f.fileType) != 0)
 				return -1;
@@ -132,7 +134,7 @@ int GetDirectoryInfoReply::Serialize(std::uint8_t* buffer, std::size_t* bufferSi
 	}
 	
 	// Return the size of serialized data as bufferSize.
-	*bufferSize = givenBufferSize - remainedBufferSize;
+	bufferSize = givenBufferSize - remainedBufferSize;
 
 	return 0;
 }
@@ -210,8 +212,6 @@ GetDirectoryInfoReply::Deserialize(
 				f.fileName = utils::utf8_to_wstring(std::move(u8_name));
 			}
 
-			// TODO: 현재 serialization이 "memory endian 방식이 같은 system 끼리만"
-			//       호환되는 잠재적 issue 존재. (다른 곳도)
 			// Get file's type.
 			if (DeserializeWithMemcpy(buffer, bufferSize, f.fileType) != 0)
 				return nullptr;

@@ -1,5 +1,3 @@
-// CMainView.cpp : 구현 파일입니다.
-//
 #include "MFC/stdafx.h"
 
 #include "MFC/CMainView.h"
@@ -10,21 +8,20 @@ namespace remoteFileExplorer
 {
 namespace mfc
 {
-
-// CMainView
-
 IMPLEMENT_DYNCREATE(CMainView, CFormView)
 
+///////////////////////////////////////////////////////////////////////////////
 CMainView::CMainView()
 	: CFormView(IDD_MAINVIEW)
 {
-
 }
 
+///////////////////////////////////////////////////////////////////////////////
 CMainView::~CMainView()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void CMainView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
@@ -32,15 +29,7 @@ void CMainView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_CLIENT, clientButton_);
 }
 
-BEGIN_MESSAGE_MAP(CMainView, CFormView)
-	ON_WM_SIZE()
-	ON_BN_CLICKED(IDC_BUTTON_SERVER, &CMainView::OnBnClickedButtonServer)
-	ON_BN_CLICKED(IDC_BUTTON_CLIENT, &CMainView::OnBnClickedButtonClient)
-END_MESSAGE_MAP()
-
-
-// CMainView 진단입니다.
-
+///////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
 void CMainView::AssertValid() const
 {
@@ -55,10 +44,14 @@ void CMainView::Dump(CDumpContext& dc) const
 #endif
 #endif //_DEBUG
 
+///////////////////////////////////////////////////////////////////////////////
+BEGIN_MESSAGE_MAP(CMainView, CFormView)
+	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_BUTTON_SERVER, &CMainView::OnBnClickedButtonServer)
+	ON_BN_CLICKED(IDC_BUTTON_CLIENT, &CMainView::OnBnClickedButtonClient)
+END_MESSAGE_MAP()
 
-// CMainView 메시지 처리기입니다.
-
-
+///////////////////////////////////////////////////////////////////////////////
 void CMainView::OnSize(UINT nType, int cx, int cy)
 {
 	CFormView::OnSize(nType, cx, cy);
@@ -80,7 +73,7 @@ void CMainView::OnSize(UINT nType, int cx, int cy)
 	}
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
 void CMainView::OnBnClickedButtonServer()
 {
 	CRect clientRect;
@@ -97,7 +90,7 @@ void CMainView::OnBnClickedButtonServer()
 	programMode_ = ProgramMode::ServerMode;
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
 void CMainView::OnBnClickedButtonClient()
 {
 	CRect clientRect;

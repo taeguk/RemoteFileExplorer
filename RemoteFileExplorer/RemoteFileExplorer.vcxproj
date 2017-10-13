@@ -98,6 +98,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -119,6 +120,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -144,6 +146,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -169,6 +172,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -181,9 +185,6 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client\Network\ServerConnector.h" />
     <ClInclude Include="Client\RemoteFileExplorer.h" />
@@ -207,11 +208,11 @@
     <ClInclude Include="Server\FileExplorerServiceInterface.h" />
     <ClInclude Include="Server\FileExplorerWatcherInterface.h" />
     <ClInclude Include="Server\Network\ClientHandlerThread.h" />
-    <ClInclude Include="Server\Network\ClientPacketHandler.h" />
+    <ClInclude Include="Server\Network\ClientMessageHandler.h" />
     <ClInclude Include="Server\Network\ClientSession.h" />
     <ClInclude Include="Server\Network\ListenerThread.h" />
     <ClInclude Include="Server\Network\IOContext.h" />
-    <ClInclude Include="Server\Server.h" />
+    <ClInclude Include="Server\Network\Server.h" />
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -230,10 +231,10 @@
     <ClCompile Include="MFC\stdafx.cpp" />
     <ClCompile Include="Server\FileExplorerService.cpp" />
     <ClCompile Include="Server\Network\ClientHandlerThread.cpp" />
-    <ClCompile Include="Server\Network\ClientPacketHandler.cpp" />
+    <ClCompile Include="Server\Network\ClientMessageHandler.cpp" />
     <ClCompile Include="Server\Network\ListenerThread.cpp" />
     <ClCompile Include="Server\Network\IOContext.cpp" />
-    <ClCompile Include="Server\Server.cpp" />
+    <ClCompile Include="Server\Network\Server.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>

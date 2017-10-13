@@ -1,4 +1,4 @@
-#include "Server/Server.h"
+#include "Server/Network/Server.h"
 
 #include <winsock2.h>
 
@@ -9,9 +9,6 @@
 
 #include "Server/Network/ListenerThread.h"
 #include "Utils/Utils.h"
-
-// TODO: 이거 어떻게 하지???
-#pragma comment(lib,"ws2_32.lib")
 
 namespace remoteFileExplorer
 {
@@ -27,23 +24,28 @@ Server::~Server()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int Server::Start(std::uint16_t port, std::size_t threadNumber /* 0 means default number */)
+int Server::Start(
+	std::uint16_t port,
+	std::size_t threadNumber /* 0 means default number */)
 {
 	std::lock_guard<decltype(mutex_)> lk(mutex_);
 
 	if (started_)
 		return -1;
 
-	// client handler thread의 개수는 기본적으로 processor 개수의 3배이다.
+	// client handler thread의 개수는 기본적으로 processor 개수의 2배이다.
 	if (threadNumber == 0)
 	{
 		SYSTEM_INFO systemInfo;
 		GetSystemInfo(&systemInfo);
-		threadNumber = systemInfo.dwNumberOfProcessors * 3;
+		threadNumber = systemInfo.dwNumberOfProcessors * 2;
 	}
 
-	listenerThread_.reset(new network::ListenerThread(
-		port, threadNumber,fileExplorerService_->Clone()));
+	listenerThread_.reset(
+		new network::ListenerThread(
+			port,
+			threadNumber,
+			fileExplorerService_->Clone()));
 
 	started_ = true;
 

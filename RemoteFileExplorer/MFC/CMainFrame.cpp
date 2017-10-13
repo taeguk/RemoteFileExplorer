@@ -1,7 +1,3 @@
-
-// MainFrame.cpp : CMainFrame 클래스의 구현
-//
-
 #include "MFC/stdafx.h"
 
 #include "MFC/CMainFrame.h"
@@ -12,15 +8,13 @@ namespace remoteFileExplorer
 {
 namespace mfc
 {
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-// CMainFrame
-
 IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
 
+///////////////////////////////////////////////////////////////////////////////
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
     ON_WM_CREATE()
     ON_WM_SETFOCUS()
@@ -28,6 +22,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
     ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 END_MESSAGE_MAP()
 
+///////////////////////////////////////////////////////////////////////////////
 static UINT indicators[] =
 {
     ID_SEPARATOR,           // 상태 줄 표시기
@@ -36,17 +31,17 @@ static UINT indicators[] =
     ID_INDICATOR_SCRL,
 };
 
-// CMainFrame 생성/소멸
-
+///////////////////////////////////////////////////////////////////////////////
 CMainFrame::CMainFrame()
 {
-    // TODO: 여기에 멤버 초기화 코드를 추가합니다.
 }
 
+///////////////////////////////////////////////////////////////////////////////
 CMainFrame::~CMainFrame()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
     if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
@@ -74,12 +69,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     return 0;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
     if (!CFrameWnd::PreCreateWindow(cs))
         return FALSE;
-    // TODO: CREATESTRUCT cs를 수정하여 여기에서
-    //  Window 클래스 또는 스타일을 수정합니다.`
+    // CREATESTRUCT cs를 수정하여 여기에서
+    // Window 클래스 또는 스타일을 수정합니다.
 
     cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
     cs.lpszClass = AfxRegisterWndClass(0);
@@ -88,8 +84,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
     return TRUE;
 }
 
-// CMainFrame 진단
-
+///////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
@@ -103,15 +98,19 @@ void CMainFrame::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 
-// CMainFrame 메시지 처리기
-
+///////////////////////////////////////////////////////////////////////////////
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
     // 뷰 창으로 포커스를 이동합니다.
     mainView_->SetFocus();
 }
 
-BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+///////////////////////////////////////////////////////////////////////////////
+BOOL CMainFrame::OnCmdMsg(
+	UINT nID,
+	int nCode,
+	void* pExtra,
+	AFX_CMDHANDLERINFO* pHandlerInfo)
 {
     // 뷰에서 첫째 크랙이 해당 명령에 나타나도록 합니다.
     if (mainView_->OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
@@ -121,6 +120,7 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
     return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void CMainFrame::OnApplicationLook(UINT id)
 {
     CWaitCursor wait;
@@ -186,10 +186,11 @@ void CMainFrame::OnApplicationLook(UINT id)
         CDockingManager::SetDockingMode(DT_SMART);
     }
 
-    RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
+    RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
 
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 {
     pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);

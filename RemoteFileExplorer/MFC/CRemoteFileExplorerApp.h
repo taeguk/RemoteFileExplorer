@@ -1,6 +1,3 @@
-
-// RemoteFileExplorer.h : RemoteFileExplorer 응용 프로그램에 대한 주 헤더 파일
-//
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -13,28 +10,20 @@ namespace remoteFileExplorer
 {
 namespace mfc
 {
-
-// CRemoteFileExplorerApp:
-// 이 클래스의 구현에 대해서는 RemoteFileExplorer.cpp을 참조하십시오.
-//
-
+///////////////////////////////////////////////////////////////////////////////
 class CRemoteFileExplorerApp : public CWinApp
 {
 public:
     CRemoteFileExplorerApp();
 
+    virtual BOOL InitInstance() override;
+    virtual int ExitInstance() override;
 
-    // 재정의입니다.
-public:
-    virtual BOOL InitInstance();
-    virtual int ExitInstance();
+	UINT  m_nAppLook;
 
-    // 구현입니다.
-
-public:
-    UINT  m_nAppLook;
-    afx_msg void OnAppAbout();
-    DECLARE_MESSAGE_MAP()
+protected:
+	afx_msg void OnAppAbout();
+	DECLARE_MESSAGE_MAP()
 };
 
 extern CRemoteFileExplorerApp theApp;

@@ -41,6 +41,7 @@ int ListenerThread::ThreadMain_()
 	hCompletionPort_ =
 		CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
 
+	// Client Handler Thread 들 생성.
 	handlerThreads_.reserve(threadNumber_);
 	for (std::size_t i = 0; i < threadNumber_; ++i)
 	{
@@ -74,7 +75,7 @@ int ListenerThread::ThreadMain_()
 	FD_SET(hServerSocket, &fdSet);
 	timeval timeout;
 	timeout.tv_sec = 0;
-	timeout.tv_usec = 10 * 1000; // 10ms // TODO:
+	timeout.tv_usec = 10 * 1000; // 10ms
 
 	while (!terminatedFlag_.load())
 	{
@@ -90,62 +91,67 @@ int ListenerThread::ThreadMain_()
 		if (selectRet == 0)
 			continue; // timeout
 		else if (selectRet == SOCKET_ERROR)
+			return -1; // 에러.
+
+		hClientSocket = accept(
+			hServerSocket,
+			(SOCKADDR*) &clientAddress,
+			&addrLen);
+
+		ClientSession* clientSession;
 		{
-			int eee = WSAGetLastError();
-			continue; // TODO: 어떻게 처리??
+			std::lock_guard<decltype(sessionMapMutex_)> lk(sessionMapMutex_);
+
+			auto result = sessionMap_.insert(std::make_pair(hClientSocket,
+				ClientSession(hClientSocket, clientAddress,
+					fileExplorerService_->Clone())
+			));
+
+			if (!result.second)
+			{
+				// 이미 세션이 존재하는 경우.
+				// 상대방이 연결을 끊고나서 바로 다시 연결을 요청하는 경우,
+				//    아주 아주 드문 확률로 발생할 수 도 있다.
+				closesocket(hClientSocket);
+				continue;
+			}
+
+			clientSession = &(result.first->second);
 		}
-
-		hClientSocket = accept(hServerSocket, (SOCKADDR*)&clientAddress, &addrLen);
-		// TODO: 에러처리 철저히 하기 (다른 곳도 다른곳도 다른 꼿또!!!)
-
-		auto result = sessionMap_.insert(std::make_pair(hClientSocket,
-			ClientSession(hClientSocket, clientAddress,
-				fileExplorerService_->Clone())
-		));
-
-		if (!result.second)
+		
+		// Client Session(socket)을 I/O completion 포트와 연결.
+		if (CreateIoCompletionPort(
+			(HANDLE) hClientSocket,
+			hCompletionPort_,
+			(ULONG_PTR) clientSession,
+			0) == nullptr)
 		{
-			// 이미 세션이 존재하는 경우.
-			// 이상한 상황!!!
-			// TODO: what the fuck?
-			closesocket(hClientSocket);
+			DestroyClientSession(hClientSocket);
 			continue;
 		}
-
-		ClientSession* clientSession = &(result.first->second);
-
-		auto ptr = CreateIoCompletionPort(
-			(HANDLE)hClientSocket, hCompletionPort_, (ULONG_PTR)clientSession, 0/*TODO:검색*/);
-
-		int pppp = GetLastError();
-
-		/*
-		// 연결된 클라이언트를 위한 버퍼를 설정하고 OVERLAPPED 구조체 변수 초기화.
-		SocketBuffer* socketBuffer = SocketBuffer::AcquireBuffer();
-		if (socketBuffer == nullptr)
-		{
-			// 에러!!!!
-			// TODO: 몇가지 처리하기.
-			continue;
-		}
-		*/
 
 		IORecvContext* recvContext = new IORecvContext();
-
 		DWORD flags = 0;
 
-		int a = WSARecv(
-			hClientSocket,               // 클라이언트 소켓
-			&recvContext->GetUpdatedWsabufRef(),                     // WSABUF
-			1,		                     // 버퍼의 수
+		// 비동기 수신 요청.
+		int ret = WSARecv(
+			hClientSocket,
+			&recvContext->GetUpdatedWsabufRef(),
+			1,
 			nullptr,
 			&flags,
-			&recvContext->GetOverlappedRef(),  // OVERLAPPED 구조체 포인터
+			&recvContext->GetOverlappedRef(),
 			nullptr
 		);
-		int b = WSAGetLastError();
 
-		int c = 3;
+		// 수신 요청 실패 시,
+		if (ret == SOCKET_ERROR && WSAGetLastError() != ERROR_IO_PENDING)
+		{
+			// 순서 중요!!!
+			(void) DestroyClientSession(hClientSocket);
+			delete recvContext;
+			continue;
+		}
 	}
 
 	closesocket(hServerSocket);
@@ -158,12 +164,15 @@ int ListenerThread::ThreadMain_()
 ///////////////////////////////////////////////////////////////////////////////
 int ListenerThread::DestroyClientSession(SOCKET hSocket)
 {
-	// TODO: sessionMap에 대한 동기화.
+	std::lock_guard<decltype(sessionMapMutex_)> lk(sessionMapMutex_);
+
 	auto it = sessionMap_.find(hSocket);
 	if (it == std::end(sessionMap_))
 		return -1;
 
 	sessionMap_.erase(it);
+	closesocket(hSocket);
+
 	return 0;
 }
 

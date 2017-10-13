@@ -21,6 +21,7 @@ enum class IOContextType
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+// Overlapped I/O를 수행할 때, I/O 에 대한 문맥을 담당하는 base class이다.
 class IOContext
 {
 public:
@@ -54,6 +55,7 @@ inline IOContext::IOContext(IOContextType type)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// 송신에 관련된 I/O Context.
 class IOSendContext : public IOContext
 {
 public:
@@ -94,6 +96,7 @@ inline WSABUF& IOSendContext::GetUpdatedWsabufRef()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// 수신에 관련된 I/O Context.
 class IORecvContext : public IOContext
 {
 public:
@@ -104,7 +107,7 @@ public:
 	WSABUF& GetUpdatedWsabufRef();
 	void UpdateBuffer(std::size_t receivedBytes);
 	void ConsumeBuffer(std::size_t consumedBytes);
-	bool BufferIsFull() const { return filledBufferSize_ >= maxBufferSize_; }
+	bool CheckBufferIsFull() const { return filledBufferSize_ >= maxBufferSize_; }
 	void ResetBuffer() { filledBufferSize_ = 0; }
 
 	static IORecvContext& TypeCastFrom(IOContext& ioContext);

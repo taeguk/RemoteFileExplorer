@@ -10,7 +10,9 @@ namespace remoteFileExplorer
 namespace server
 {
 ///////////////////////////////////////////////////////////////////////////////
-/* TODO: Multithread Safe 해야함. (Reentrant하면 더 좋고.) */
+// 파일 탐색기 서비스를 제공한다.
+// 실제로 로컬에서 파일 탐색기에 관련된 기능들을 수행하는 역할을 한다.
+// Thread Unsafe
 class FileExplorerService : public FileExplorerServiceInterface
 {
 public:
@@ -26,7 +28,7 @@ public:
 		common::Directory& dir) override;
 
 private:
-	std::shared_ptr<FileExplorerWatcherInterface> watcher_;  // TODO: 검토...(shared_ptr관련)
+	std::shared_ptr<FileExplorerWatcherInterface> watcher_;
 };
 
 /*****************************************************************************/

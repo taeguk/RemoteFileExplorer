@@ -16,7 +16,9 @@ const drive_count_t DriveCountMax = UINT8_MAX;
 } // unnamed namespace
 
 ///////////////////////////////////////////////////////////////////////////////
-int GetLogicalDriveInfoRequest::Serialize(std::uint8_t* buffer, std::size_t* bufferSize)
+int GetLogicalDriveInfoRequest::Serialize(
+	std::uint8_t* buffer,
+	std::size_t& bufferSize)
 {
 	if (ClientMessage::Serialize(buffer, bufferSize) != 0)
 		return -1;
@@ -27,12 +29,14 @@ int GetLogicalDriveInfoRequest::Serialize(std::uint8_t* buffer, std::size_t* buf
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int GetLogicalDriveInfoReply::Serialize(std::uint8_t* buffer, std::size_t* bufferSize)
+int GetLogicalDriveInfoReply::Serialize(
+	std::uint8_t* buffer,
+	std::size_t& bufferSize)
 {
-	std::size_t givenBufferSize = *bufferSize;
+	std::size_t givenBufferSize = bufferSize;
 	std::size_t preSerializedSize = givenBufferSize;
 
-	if (ServerMessage::Serialize(buffer, &preSerializedSize) != 0)
+	if (ServerMessage::Serialize(buffer, preSerializedSize) != 0)
 		return -1;
 
 	std::size_t remainedBufferSize = givenBufferSize - preSerializedSize;
@@ -82,16 +86,22 @@ int GetLogicalDriveInfoReply::Serialize(std::uint8_t* buffer, std::size_t* buffe
 
 			// Put drive's name.
 			{
-				std::string u8_driveName = utils::wstring_to_utf8(drive.driveName);
+				std::string u8_driveName =
+					utils::wstring_to_utf8(drive.driveName);
 
-				if (SerializeString(buffer, remainedBufferSize, u8_driveName) != 0)
+				if (SerializeString(
+					buffer,
+					remainedBufferSize,
+					u8_driveName) != 0)
+				{
 					return -1;
+				}
 			}
 		}
 	}
 	
 	// Return the size of serialized data as bufferSize.
-	*bufferSize = givenBufferSize - remainedBufferSize;
+	bufferSize = givenBufferSize - remainedBufferSize;
 
 	return 0;
 }
@@ -151,7 +161,8 @@ GetLogicalDriveInfoReply::Deserialize(
 				if (DeserializeString(buffer, bufferSize, u8_driveName) != 0)
 					return nullptr;
 
-				drive.driveName = utils::utf8_to_wstring(std::move(u8_driveName));
+				drive.driveName =
+					utils::utf8_to_wstring(std::move(u8_driveName));
 			}
 
 			drives.push_back(std::move(drive));
@@ -161,7 +172,8 @@ GetLogicalDriveInfoReply::Deserialize(
 	if (bufferSize != 0)
 		return nullptr;
 
-	return std::make_unique<GetLogicalDriveInfoReply>(statusCode, std::move(drives));
+	return std::make_unique<GetLogicalDriveInfoReply>(
+		statusCode, std::move(drives));
 }
 
 } // namespace message

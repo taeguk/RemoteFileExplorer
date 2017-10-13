@@ -7,10 +7,6 @@
 
 #include "Utils/utils.h"
 
-// TODO: line length 80자 제한 지키도록 바꾸기. (다른곳도)
-
-// TODO: Message쪽 설계 다시 생각해보기.....
-
 namespace remoteFileExplorer
 {
 namespace message
@@ -36,6 +32,11 @@ enum class MessageFlag : std::uint8_t
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+// Client와 Server가 서로 주고 받는 message는 추상화한 클래스이다.
+// 이 클래스를 상속받는 클래스들이 반드시 해야하는 것이 있다.
+// 1. Serialize(..) 의 override.
+// 2. 클래스 함수로서 Deserialize 를 정의.
+// 단, 위 두 개의 함수에서 반드시 base class의 것도 호출해야 한다.
 class Message
 {
 public:
@@ -44,17 +45,17 @@ public:
 
 	bool IsClientMessage() const { return utils::to_underlying(messageFlag_) % 2 == 0; }
 	bool IsServerMessage() const { return utils::to_underlying(messageFlag_) % 2 == 1; }
-
 	MessageFlag GetMessageFlag() const { return messageFlag_; }
 
-	virtual int Serialize(std::uint8_t* buffer, std::size_t* bufferSize) = 0;
+	virtual int Serialize(
+		std::uint8_t* buffer,
+		std::size_t& bufferSize) = 0;
 
 	static std::unique_ptr<Message> Deserialize(
 		const std::uint8_t* buffer,
 		std::size_t bufferSize);
 
 private:
-	/******************** DATA FIELDS ********************/
 	MessageFlag messageFlag_;
 };
 
@@ -65,7 +66,7 @@ class ClientMessage : public Message
 public:
 	explicit ClientMessage(MessageFlag messageFlag) : Message(messageFlag) {}
 
-	static ClientMessage& TypeCastFromMessage(Message& message);
+	static ClientMessage& TypeCastFrom(Message& message);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,19 +76,19 @@ class ServerMessage : public Message
 public:
 	explicit ServerMessage(MessageFlag messageFlag) : Message(messageFlag) {}
 
-	static ServerMessage& TypeCastFromMessage(Message& message);
+	static ServerMessage& TypeCastFrom(Message& message);
 };
 
 /*****************************************************************************/
 /****************************** INLINE FUNCTIONS *****************************/
 /*****************************************************************************/
-/*static*/ inline ClientMessage& ClientMessage::TypeCastFromMessage(Message& message)
+/*static*/ inline ClientMessage& ClientMessage::TypeCastFrom(Message& message)
 {
 	assert(message.IsClientMessage());
 	return reinterpret_cast<ClientMessage&>(message);
 }
 
-/*static*/ inline ServerMessage& ServerMessage::TypeCastFromMessage(Message& message)
+/*static*/ inline ServerMessage& ServerMessage::TypeCastFrom(Message& message)
 {
 	assert(message.IsServerMessage());
 	return reinterpret_cast<ServerMessage&>(message);

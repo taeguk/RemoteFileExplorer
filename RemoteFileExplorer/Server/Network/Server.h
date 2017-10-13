@@ -12,10 +12,13 @@ namespace remoteFileExplorer
 namespace server
 {
 ///////////////////////////////////////////////////////////////////////////////
+// Client들과의 연결, 통신, 요청 처리 등을 담당하는 가장 상위 주체이다.
+// Thread Safe
 class Server final
 {
 public:
-	Server(std::unique_ptr<FileExplorerServiceInterface> fileExplorerService);
+	Server(std::unique_ptr<FileExplorerServiceInterface> fileExplorerService)
+		: fileExplorerService_(std::move(fileExplorerService)) {}
 	~Server();
 
 	// Non-copyable and Non-moveable.
@@ -24,7 +27,9 @@ public:
 	Server(Server&&) = delete;
 	Server& operator=(Server&&) = delete;
 
-	int Start(std::uint16_t port, std::size_t threadNumber = 0 /* 0 means default number */);
+	int Start(
+		std::uint16_t port,
+		std::size_t threadNumber = 0 /* 0 means default number */);
 	int Stop();
 
 private:
@@ -33,13 +38,6 @@ private:
 	std::unique_ptr<FileExplorerServiceInterface> fileExplorerService_;
 	std::unique_ptr<network::ListenerThread> listenerThread_;
 };
-
-/*****************************************************************************/
-/****************************** INLINE FUNCTIONS *****************************/
-/*****************************************************************************/
-inline Server::Server(std::unique_ptr<FileExplorerServiceInterface> fileExplorerService)
-	: fileExplorerService_(std::move(fileExplorerService))
-{}
 
 } // namespace server
 } // namespace remoteFileExplorer

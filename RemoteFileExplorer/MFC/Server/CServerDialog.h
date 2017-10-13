@@ -6,7 +6,7 @@
 
 #include "MFC/resource.h"
 #include "MFC/Server/FileExplorerWatcher.h"
-#include "Server/Server.h"
+#include "Server/Network/Server.h"
 
 namespace remoteFileExplorer
 {
@@ -14,21 +14,21 @@ namespace mfc
 {
 namespace server
 {
-
+///////////////////////////////////////////////////////////////////////////////
 enum class ServerStatus
 {
 	STARTED,
 	STOPPED
 };
 
-// CServerDialog 대화 상자입니다.
-
+///////////////////////////////////////////////////////////////////////////////
+// Server의 UI를 담당한다.
 class CServerDialog : public CDialogEx
 {
 	DECLARE_DYNAMIC(CServerDialog)
 
 public:
-	CServerDialog(CWnd* pParent = NULL);   // 표준 생성자입니다.
+	CServerDialog(CWnd* pParent = nullptr);
 	virtual ~CServerDialog();
 
 // 대화 상자 데이터입니다.
@@ -38,7 +38,7 @@ public:
 
 protected:
 	virtual BOOL OnInitDialog() override;
-	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV 지원입니다.
+	virtual void DoDataExchange(CDataExchange* pDX) override; // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnBnClickedMfcbuttonServerControl();
@@ -46,9 +46,9 @@ protected:
 	afx_msg LRESULT OnGetDirectoryInfo(WPARAM wParam, LPARAM lParam);
 
 private:
-	static const UINT FeWmBase{ WM_APP }; // file explorer window message base
+	// File Explorer Watcher로 부터 전달되는 Window Message의 Base 값.
+	static const UINT FeWmBase{ WM_APP };
 
-	// TODO: 동적할당 해야하지 않을까...?
 	std::unique_ptr<remoteFileExplorer::server::Server> server_;
 	ServerStatus status_{ ServerStatus::STOPPED };
 	CMFCButton controlButton_;

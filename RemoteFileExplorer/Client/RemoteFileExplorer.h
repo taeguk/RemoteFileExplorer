@@ -20,13 +20,18 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+// Thread Unsafe.
+// 동기적으로(blocking으로) RPC를 수행한다.
+// RPC 수행 중 문제 상황이 생길 경우, RPCException 예외를 던진다.
 class RemoteFileExplorer final : public common::FileExplorerInterface
 {
 public:
+	RemoteFileExplorer(std::size_t bufferSize = 64 * 1024);
+	~RemoteFileExplorer();
+
 	int Connect(std::uint8_t ipAddress[4], std::uint16_t port);
 	int Disconnect();
 
-	// 동기적으로(blocking으로) 수행.
 	virtual int GetLogicalDriveInfo(
 		std::vector<common::LogicalDrive>& drives) override;
 	virtual int GetDirectoryInfo(
@@ -36,7 +41,21 @@ public:
 
 private:
 	network::ServerConnector serverConnector_;
+	const std::size_t maxBufferSize_;
+	std::uint8_t* buffer_;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+inline RemoteFileExplorer::RemoteFileExplorer(std::size_t bufferSize)
+	: maxBufferSize_(bufferSize)
+{
+	buffer_ = new std::uint8_t[bufferSize];
+}
+
+inline RemoteFileExplorer::~RemoteFileExplorer()
+{
+	delete[] buffer_;
+}
 
 } // namespace client
 } // namespace remoteFileExplorer
