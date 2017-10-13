@@ -156,6 +156,9 @@
     <ClInclude Include="Server\Network\IOContext.h">
       <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
+    <ClInclude Include="Common\CommonType.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server\Server.cpp">

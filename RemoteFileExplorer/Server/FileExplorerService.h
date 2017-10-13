@@ -22,7 +22,7 @@ public:
 		std::vector<common::LogicalDrive>& drives) override;
 	virtual int GetDirectoryInfo(
 		const std::wstring& path,
-		std::uint32_t offset,
+		common::file_count_t offset,
 		common::Directory& dir) override;
 
 private:

@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Common/CommonType.h"
+
 namespace remoteFileExplorer
 {
 namespace server
@@ -15,7 +17,7 @@ public:
 	virtual void GetLogicalDriveInfo() = 0;
 	virtual void GetDirectoryInfo(
 		const std::wstring& path,
-		std::uint32_t offset) = 0;
+		common::file_count_t offset) = 0;
 };
 
 } // namespace server

@@ -28,7 +28,7 @@ public:
 	virtual void GetLogicalDriveInfo() override;
 	virtual void GetDirectoryInfo(
 		const std::wstring& path,
-		std::uint32_t offset) override;
+		common::file_count_t offset) override;
 
 private:
 	HWND hWindow_;

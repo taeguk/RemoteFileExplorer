@@ -17,7 +17,7 @@ inline time_t filetime_to_time_t(const FILETIME& ft)
 
     return ull.QuadPart / 10000000ULL - 11644473600ULL;
 }
-const std::uint32_t MaxGotFileCount = 50;
+const common::file_count_t MaxGotFileCount = 50;
 } // unnamed namespace
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ int FileExplorerService::GetLogicalDriveInfo(
 ///////////////////////////////////////////////////////////////////////////////
 int FileExplorerService::GetDirectoryInfo(
 	const std::wstring & path,
-	std::uint32_t offset,
+	common::file_count_t offset,
 	common::Directory & dir)
 {
 	using common::FileInformation;
@@ -92,8 +92,8 @@ int FileExplorerService::GetDirectoryInfo(
 	if (hFind == INVALID_HANDLE_VALUE)
 		return -1;
 
-	const std::uint32_t givenOffset = offset;
-	std::uint32_t count = 0;
+	const common::file_count_t givenOffset = offset;
+	common::file_count_t count = 0;
 	dir.path = path;
 
 	bool success = true;

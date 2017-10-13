@@ -10,8 +10,7 @@ namespace message
 ///////////////////////////////////////////////////////////////////////////////
 namespace /*unnamed*/
 {
-using file_count_t = std::uint32_t;
-const file_count_t FileCountMax = UINT32_MAX;
+	const common::file_count_t FileCountMax = UINT32_MAX;
 } // unnamed namespace
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -95,7 +94,7 @@ int GetDirectoryInfoReply::Serialize(std::uint8_t* buffer, std::size_t* bufferSi
 			if (SerializeWithMemcpy(
 				buffer,
 				remainedBufferSize,
-				static_cast<file_count_t>(numFileInfos)) != 0)
+				static_cast<common::file_count_t>(numFileInfos)) != 0)
 			{
 				return -1;
 			}
@@ -145,7 +144,7 @@ GetDirectoryInfoRequest::Deserialize(
 	std::size_t bufferSize)
 {
 	std::string u8_path;
-	std::uint32_t offset;
+	common::file_count_t offset;
 
 	if (DeserializeString(buffer, bufferSize, u8_path) != 0)
 		return nullptr;
@@ -168,7 +167,7 @@ GetDirectoryInfoReply::Deserialize(
 	const std::uint8_t* buffer,
 	std::size_t bufferSize)
 {
-	std::int8_t statusCode;
+	common::status_code_t statusCode;
 	common::Directory dir;
 
 	// Get the status code.
@@ -188,7 +187,7 @@ GetDirectoryInfoReply::Deserialize(
 		}
 
 		// Get the count of files in a directory.
-		file_count_t numFileInfos;
+		common::file_count_t numFileInfos;
 		{
 			if (DeserializeWithMemcpy(buffer, bufferSize, numFileInfos) != 0)
 				return nullptr;
@@ -197,7 +196,7 @@ GetDirectoryInfoReply::Deserialize(
 		}
 
 		// Get directory's file informations.
-		for (file_count_t i = 0; i < numFileInfos; ++i)
+		for (common::file_count_t i = 0; i < numFileInfos; ++i)
 		{
 			common::FileInformation f;
 

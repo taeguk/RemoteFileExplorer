@@ -60,7 +60,7 @@ int RemoteFileExplorer::GetLogicalDriveInfo(
 
 int RemoteFileExplorer::GetDirectoryInfo(
 	const std::wstring& path,
-	std::uint32_t offset,
+	common::file_count_t offset,
 	common::Directory& dir)
 {
 	static const std::size_t MaxBufferSize = 64 * 1024;

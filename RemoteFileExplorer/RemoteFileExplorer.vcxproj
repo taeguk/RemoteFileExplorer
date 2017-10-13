@@ -187,6 +187,7 @@
   <ItemGroup>
     <ClInclude Include="Client\Network\ServerConnector.h" />
     <ClInclude Include="Client\RemoteFileExplorer.h" />
+    <ClInclude Include="Common\CommonType.h" />
     <ClInclude Include="Common\FileExplorerInterface.h" />
     <ClInclude Include="Common\FileSystem.h" />
     <ClInclude Include="Message\GetDirectoryInfoMessage.h" />

@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Message/Message.h"
+#include "Common/CommonType.h"
 #include "Common/FileSystem.h"
 
 namespace remoteFileExplorer
@@ -32,11 +33,12 @@ private:
 class GetLogicalDriveInfoReply : public ServerMessage
 {
 public:
-	explicit GetLogicalDriveInfoReply(std::int8_t statusCode,
+	explicit GetLogicalDriveInfoReply(
+		common::status_code_t statusCode,
 		std::vector<common::LogicalDrive>&& drives);
 
 	virtual int Serialize(std::uint8_t* buffer, std::size_t* bufferSize) override;
-	std::int8_t GetStatusCode() const { return statusCode_; }
+	common::status_code_t GetStatusCode() const { return statusCode_; }
 	std::vector<common::LogicalDrive>&&
 		GetLogicalDrivesRvalueRef() { return std::move(drives_); }
 
@@ -49,7 +51,7 @@ public:
 		MessageFlag::GetLogicalDriveInfoReply;
 
 private:
-	std::int8_t statusCode_;
+	common::status_code_t statusCode_;
 	std::vector<common::LogicalDrive> drives_;
 };
 
@@ -62,7 +64,7 @@ inline GetLogicalDriveInfoRequest::GetLogicalDriveInfoRequest()
 }
 
 inline GetLogicalDriveInfoReply::GetLogicalDriveInfoReply(
-	std::int8_t statusCode,
+	common::status_code_t statusCode,
 	std::vector<common::LogicalDrive>&& drives)
 	: ServerMessage(_MessageFlag),
 	  statusCode_(statusCode),

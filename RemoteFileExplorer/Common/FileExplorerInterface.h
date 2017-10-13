@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "Common/CommonType.h"
 #include "Common/FileSystem.h"
 
 namespace remoteFileExplorer
@@ -20,7 +21,7 @@ public:
 	virtual int GetLogicalDriveInfo(std::vector<LogicalDrive>& drives) = 0;
 	virtual int GetDirectoryInfo(
 		const std::wstring& path,
-		std::uint32_t offset,
+		file_count_t offset,
 		Directory& dir) = 0;
 };
 

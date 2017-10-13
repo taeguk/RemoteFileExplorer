@@ -82,22 +82,22 @@ int ClientHandlerThread::ThreadMain_()
 
 			while (true)
 			{
-				if (recvBufferSize < sizeof(std::uint32_t))
+				if (recvBufferSize < sizeof(common::message_size_t))
 					break;
 
 				// TODO: 시스템 엔디안 표기법 종속성에 의한 잠재적 이슈 존재.
-				std::uint32_t messageSize =
-					*reinterpret_cast<std::uint32_t*>(recvBuffer);
+				common::message_size_t messageSize =
+					*reinterpret_cast<common::message_size_t*>(recvBuffer);
 
-				recvBuffer += sizeof(std::uint32_t);
-				recvBufferSize -= sizeof(std::uint32_t);
+				recvBuffer += sizeof(common::message_size_t);
+				recvBufferSize -= sizeof(common::message_size_t);
 
 				if (recvBufferSize < messageSize)
 					break;
 
 				recvBuffer += messageSize;
 				recvBufferSize -= messageSize;
-				processedBufferSize += (messageSize + sizeof(std::uint32_t));
+				processedBufferSize += (messageSize + sizeof(common::message_size_t));
 
 				// TODO: 제대로 관리.
 				std::uint8_t* sendBuffer = new std::uint8_t[64 * 1024];
@@ -118,14 +118,14 @@ int ClientHandlerThread::ThreadMain_()
 				}
 
 				IOSendContext* sendContext = new IOSendContext(
-					sizeof(std::uint32_t) + sendBufferSize);
+					sizeof(common::message_size_t) + sendBufferSize);
 				std::uint8_t* buffer = sendContext->GetBuffer();
 
-				*reinterpret_cast<std::uint32_t*>(buffer)
-					= static_cast<std::uint32_t>(sendBufferSize);
+				*reinterpret_cast<common::message_size_t*>(buffer)
+					= static_cast<common::message_size_t>(sendBufferSize);
 
 				std::memcpy(
-					buffer + sizeof(std::uint32_t),
+					buffer + sizeof(common::message_size_t),
 					sendBuffer,
 					sendBufferSize);
 

@@ -132,7 +132,7 @@ LRESULT CServerDialog::OnGetLogicalDriveInfo(WPARAM wParam, LPARAM lParam)
 
 LRESULT CServerDialog::OnGetDirectoryInfo(WPARAM wParam, LPARAM lParam)
 {
-	using ParamType = std::pair<std::wstring, std::uint32_t>;
+	using ParamType = std::pair<std::wstring, common::file_count_t>;
 
 	auto param =
 		std::unique_ptr<ParamType>(reinterpret_cast<ParamType*>(wParam));

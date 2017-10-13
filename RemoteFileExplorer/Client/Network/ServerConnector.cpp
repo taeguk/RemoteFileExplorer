@@ -83,7 +83,7 @@ int ServerConnector::Communicate(
 	DWORD flags = 0;
 
 	// Send the length of message, first.
-	std::uint32_t sendMessageLength = static_cast<std::uint32_t>(*bufferSize);
+	common::message_size_t sendMessageLength = static_cast<common::message_size_t>(*bufferSize);
 	wsabuf.buf = reinterpret_cast<char*>(&sendMessageLength);
 	wsabuf.len = sizeof(sendMessageLength);
 	if (WSASend(hSocket_, &wsabuf, 1, &sendBytes,
@@ -102,7 +102,7 @@ int ServerConnector::Communicate(
 	}
 
 	// Receive the length of message, first.
-	std::uint32_t recvMessageLength;
+	common::message_size_t recvMessageLength;
 	wsabuf.buf = reinterpret_cast<char*>(&recvMessageLength);
 	wsabuf.len = sizeof(recvMessageLength);
 	while (wsabuf.len > 0)

@@ -1,5 +1,6 @@
 #include "Message/GetLogicalDriveInfoMessage.h"
 
+#include "Common/CommonType.h"
 #include "Message/Serialization.h"
 #include "Utils/Utils.h"
 
@@ -113,7 +114,7 @@ GetLogicalDriveInfoReply::Deserialize(
 	const std::uint8_t* buffer,
 	std::size_t bufferSize)
 {
-	std::int8_t statusCode;
+	common::status_code_t statusCode;
 	std::vector<common::LogicalDrive> drives;
 
 	// Get the status code.

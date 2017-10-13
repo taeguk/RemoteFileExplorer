@@ -57,7 +57,7 @@ std::unique_ptr<message::ServerMessage> HandleClientMessage(
 
 		common::FileExplorerInterface& fileExplorer = session.GetFileExplorer();
 
-		std::int8_t statusCode = 0;
+		common::status_code_t statusCode = 0;
 		std::vector<common::LogicalDrive> drives;
 
 		if (fileExplorer.GetLogicalDriveInfo(drives) != 0)
@@ -73,7 +73,7 @@ std::unique_ptr<message::ServerMessage> HandleClientMessage(
 
 		common::FileExplorerInterface& fileExplorer = session.GetFileExplorer();
 
-		std::int8_t statusCode = 0;
+		common::status_code_t statusCode = 0;
 		common::Directory dir;
 
 		if (fileExplorer.GetDirectoryInfo(

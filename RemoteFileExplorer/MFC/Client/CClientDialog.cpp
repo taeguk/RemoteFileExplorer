@@ -241,7 +241,7 @@ void CClientDialog::OnTvnSelchangedTreeDirectory(NMHDR *pNMHDR, LRESULT *pResult
 	// 폴더에 파일이 많을 경우, 한 번에 가져올 수 없으므로,
 	// 여러 번에 걸쳐 가져온다.
 	common::Directory dir;
-	std::uint32_t offset = 0;
+	common::file_count_t offset = 0;
 
 	do
 	{

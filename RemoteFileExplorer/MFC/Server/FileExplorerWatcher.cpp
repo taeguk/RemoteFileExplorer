@@ -21,12 +21,12 @@ void FileExplorerWatcher::GetLogicalDriveInfo()
 ///////////////////////////////////////////////////////////////////////////////
 void FileExplorerWatcher::GetDirectoryInfo(
 	const std::wstring& path,
-	std::uint32_t offset)
+	common::file_count_t offset)
 {
 	::PostMessage(
 		hWindow_,
 		wmBase_ + WmOffsetGetDirectoryInfo,
-		(WPARAM) new std::pair<std::wstring, std::uint32_t>(path, offset),
+		(WPARAM) new std::pair<std::wstring, common::file_count_t>(path, offset),
 		0);
 }
 
