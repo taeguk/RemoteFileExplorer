@@ -1,6 +1,6 @@
 #include "Server/Network/ListenerThread.h"
 
-#include "Server/Network/SocketBuffer.h"
+#include "Server/Network/IOContext.h"
 
 namespace remoteFileExplorer
 {
@@ -130,15 +130,17 @@ int ListenerThread::ThreadMain_()
 		}
 		*/
 
+		IORecvContext* recvContext = new IORecvContext();
+
 		DWORD flags = 0;
 
 		int a = WSARecv(
 			hClientSocket,               // 클라이언트 소켓
-			&clientSession->GetUpdatedWsabufRef(),                     // WSABUF
+			&recvContext->GetUpdatedWsabufRef(),                     // WSABUF
 			1,		                     // 버퍼의 수
 			nullptr,
 			&flags,
-			&clientSession->GetInitializedOVELAPPED(),  // OVERLAPPED 구조체 포인터
+			&recvContext->GetOverlappedRef(),  // OVERLAPPED 구조체 포인터
 			nullptr
 		);
 		int b = WSAGetLastError();

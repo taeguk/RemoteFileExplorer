@@ -1,7 +1,7 @@
 #include "Server/Network/ClientHandlerThread.h"
 
 #include "Server/Network/ClientPacketHandler.h"
-#include "Server/Network/SocketBuffer.h"
+#include "Server/Network/IOContext.h"
 
 namespace remoteFileExplorer
 {
@@ -31,7 +31,8 @@ int ClientHandlerThread::ThreadMain_()
 {
 	DWORD bytesTransferred;
 	ClientSession* clientSession = nullptr;  // TODO: dangling 위험 해결하기.
-	OVERLAPPED* dummy = nullptr;
+	IOContext* ioContext = nullptr;
+	OVERLAPPED* overlapped = nullptr;
 
 	while (!terminatedFlag_.load())
 	{
@@ -39,17 +40,18 @@ int ClientHandlerThread::ThreadMain_()
 			hCompletionPort_,    // Completion Port
 			&bytesTransferred,   // 전송된 바이트수
 			(PULONG_PTR) &clientSession,   // ClientSession 포인터
-			&dummy, // OVERLAPPED 구조체 포인터.
+			&overlapped, // OVERLAPPED 구조체 포인터.
 			10  // 10ms. TODO: 하드코딩 안하기.
 		);
 
 		// TODO: 검토.
-		if (!success && dummy == nullptr)
+		if (!success && overlapped == nullptr)
 		{
 			// 아마도 time-out.
 			continue;
 		}
 
+		IOContext* ioContext = IOContext::PointerCastFrom(overlapped);
 		SOCKET hSocket = clientSession->GetSocketHandle();
 
 		if (!success || bytesTransferred == 0) //EOF 전송시.
@@ -57,103 +59,111 @@ int ClientHandlerThread::ThreadMain_()
 			// 순서 중요!!!
 			(void) fDestroyClientSession_(hSocket);
 			(void) closesocket(hSocket);
+			delete ioContext;
 			continue;
 		}
 
-		clientSession->UpdateReceiveBuffer(bytesTransferred);
-
-		std::uint8_t* recvBuffer;
-		std::size_t recvBufferSize;
-
-		std::tie(recvBuffer, recvBufferSize) =
-			clientSession->GetReceiveBufferStatus();
-
-		std::size_t processedBufferSize = 0;
-
-		while (true)
+		if (ioContext->GetType() == IOContextType::Send)
 		{
-			if (recvBufferSize < sizeof(std::uint32_t))
-				break;
+			delete ioContext;
+		}
+		else
+		{
+			IORecvContext* recvContext = &IORecvContext::TypeCastFrom(*ioContext);
+			recvContext->UpdateBuffer(bytesTransferred);
 
-			// TODO: 시스템 엔디안 표기법 종속성에 의한 잠재적 이슈 존재.
-			std::uint32_t messageSize =
-				*reinterpret_cast<std::uint32_t*>(recvBuffer);
+			std::uint8_t* recvBuffer;
+			std::size_t recvBufferSize;
 
-			recvBuffer += sizeof(std::uint32_t);
-			recvBufferSize -= sizeof(std::uint32_t);
-			//processedBufferSize += sizeof(std::uint32_t);
+			std::tie(recvBuffer, recvBufferSize) =
+				recvContext->GetBufferStatus();
 
-			if (recvBufferSize < messageSize)
-				break;
+			std::size_t processedBufferSize = 0;
 
-			recvBuffer += messageSize;
-			recvBufferSize -= messageSize;
-			processedBufferSize += (messageSize + sizeof(std::uint32_t));
-
-			// TODO: 제대로 관리.
-			std::uint8_t* sendBuffer = new std::uint8_t[64 * 1024];
-			std::size_t sendBufferSize = 64 * 1024;
-
-			if (HandleClientPacket(
-				*clientSession,
-				recvBuffer - messageSize,
-				recvBufferSize + messageSize,
-				sendBuffer,
-				&sendBufferSize) != 0)
+			while (true)
 			{
-				// 순서 중요!!!
-				(void) fDestroyClientSession_(hSocket);
-				(void) closesocket(hSocket);
-				continue;
+				if (recvBufferSize < sizeof(std::uint32_t))
+					break;
+
+				// TODO: 시스템 엔디안 표기법 종속성에 의한 잠재적 이슈 존재.
+				std::uint32_t messageSize =
+					*reinterpret_cast<std::uint32_t*>(recvBuffer);
+
+				recvBuffer += sizeof(std::uint32_t);
+				recvBufferSize -= sizeof(std::uint32_t);
+
+				if (recvBufferSize < messageSize)
+					break;
+
+				recvBuffer += messageSize;
+				recvBufferSize -= messageSize;
+				processedBufferSize += (messageSize + sizeof(std::uint32_t));
+
+				// TODO: 제대로 관리.
+				std::uint8_t* sendBuffer = new std::uint8_t[64 * 1024];
+				std::size_t sendBufferSize = 64 * 1024;
+
+				if (HandleClientPacket(
+					*clientSession,
+					recvBuffer - messageSize,
+					recvBufferSize + messageSize,
+					sendBuffer,
+					&sendBufferSize) != 0)
+				{
+					// 순서 중요!!!
+					(void) fDestroyClientSession_(hSocket);
+					(void) closesocket(hSocket);
+					delete recvContext;
+					continue;
+				}
+
+				IOSendContext* sendContext = new IOSendContext(
+					sizeof(std::uint32_t) + sendBufferSize);
+				std::uint8_t* buffer = sendContext->GetBuffer();
+
+				*reinterpret_cast<std::uint32_t*>(buffer)
+					= static_cast<std::uint32_t>(sendBufferSize);
+
+				std::memcpy(
+					buffer + sizeof(std::uint32_t),
+					sendBuffer,
+					sendBufferSize);
+
+				// Send the message.
+				int b = WSASend(
+					hSocket,
+					&sendContext->GetUpdatedWsabufRef(),
+					1,
+					nullptr,
+					0,
+					&sendContext->GetOverlappedRef(),
+					nullptr);
+
+				int bb = WSAGetLastError();
+
+				delete[] sendBuffer;
 			}
 
-			WSABUF wsabuf;
-			DWORD sendBytes;
+			recvContext->ConsumeBuffer(processedBufferSize);
 
-			// Send the length of message.
-			std::uint32_t sendMessageLength =
-				static_cast<std::uint32_t>(sendBufferSize);
-			wsabuf.buf = reinterpret_cast<char*>(&sendMessageLength);
-			wsabuf.len = sizeof(std::uint32_t);
-			// TODO: 실패 시, socket 닫는쪽으로 예외처리하기. (다른 곳도)
-			//       Send byte 수 검사.
-			//       Send도 비동기적으로 바꾸기.
-			int a = WSASend(hSocket, &wsabuf, 1,
-				&sendBytes, 0, nullptr, nullptr);
+			if (recvContext->BufferIsFull())
+			{
+				(void) fDestroyClientSession_(hSocket);
+				(void) closesocket(hSocket);
+				delete recvContext;
+			}
 
-			int aa = WSAGetLastError();
+			DWORD flags = 0;
 
-			// Send the message.
-			wsabuf.buf = reinterpret_cast<char*>(sendBuffer);
-			wsabuf.len = sendBufferSize;
-			int b =  WSASend(hSocket, &wsabuf, 1,
-				&sendBytes, 0, nullptr, nullptr);
-
-			int bb = WSAGetLastError();
-
-			delete[] sendBuffer;
+			WSARecv(
+				hSocket,                     // 클라이언트 소켓
+				&recvContext->GetUpdatedWsabufRef(),     // 버퍼
+				1,		                     // 버퍼의 수
+				nullptr,
+				&flags,
+				&recvContext->GetOverlappedRef(), // OVERLAPPED 구조체 포인터
+				nullptr);
 		}
-
-		clientSession->ConsumeReceiveBuffer(processedBufferSize);
-
-		if (clientSession->ReceiveBufferIsFull())
-		{
-			// TODO: 실패 message 전송해주기.
-			// Message를 담기에 receiver buffer의 크기가 부족한 경우,
-			// Message를 그냥 버리고, 새로운 메세지를 받는다.
-			clientSession->ResetReceiveBuffer();
-		}
-
-		DWORD flags = 0;
-
-		WSARecv(
-			hSocket,                     // 클라이언트 소켓
-			&clientSession->GetUpdatedWsabufRef(),     // 버퍼
-			1,		                     // 버퍼의 수
-			nullptr,
-			&flags,
-			&clientSession->GetInitializedOVELAPPED(), // OVERLAPPED 구조체 포인터
-			nullptr);
 	}
 
 	return 0;

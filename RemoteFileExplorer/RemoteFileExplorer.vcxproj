@@ -209,7 +209,7 @@
     <ClInclude Include="Server\Network\ClientPacketHandler.h" />
     <ClInclude Include="Server\Network\ClientSession.h" />
     <ClInclude Include="Server\Network\ListenerThread.h" />
-    <ClInclude Include="Server\Network\SocketBuffer.h" />
+    <ClInclude Include="Server\Network\IOContext.h" />
     <ClInclude Include="Server\Server.h" />
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>
@@ -231,7 +231,7 @@
     <ClCompile Include="Server\Network\ClientHandlerThread.cpp" />
     <ClCompile Include="Server\Network\ClientPacketHandler.cpp" />
     <ClCompile Include="Server\Network\ListenerThread.cpp" />
-    <ClCompile Include="Server\Network\SocketBuffer.cpp" />
+    <ClCompile Include="Server\Network\IOContext.cpp" />
     <ClCompile Include="Server\Server.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
   </ItemGroup>

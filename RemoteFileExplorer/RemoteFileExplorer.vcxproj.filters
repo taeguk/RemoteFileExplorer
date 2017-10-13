@@ -141,9 +141,6 @@
     <ClInclude Include="Server\Network\ListenerThread.h">
       <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Server\Network\SocketBuffer.h">
-      <Filter>헤더 파일\Server\Network</Filter>
-    </ClInclude>
     <ClInclude Include="Message\GetLogicalDriveInfoMessage.h">
       <Filter>헤더 파일\Message</Filter>
     </ClInclude>
@@ -155,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="Message\Serialization.h">
       <Filter>헤더 파일\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Network\IOContext.h">
+      <Filter>헤더 파일\Server\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +194,6 @@
     <ClCompile Include="Client\Network\ServerConnector.cpp">
       <Filter>소스 파일\Client\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Server\Network\SocketBuffer.cpp">
-      <Filter>소스 파일\Server\Network</Filter>
-    </ClCompile>
     <ClCompile Include="Server\Network\ListenerThread.cpp">
       <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
@@ -217,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="Utils\Utils.cpp">
       <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Network\IOContext.cpp">
+      <Filter>소스 파일\Server\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
