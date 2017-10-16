@@ -2,6 +2,8 @@
 
 #include <windows.h>
 
+#include <algorithm>
+
 namespace remoteFileExplorer
 {
 namespace server
@@ -76,82 +78,89 @@ int FileExplorerService::GetLogicalDriveInfo(
 
 ///////////////////////////////////////////////////////////////////////////////
 int FileExplorerService::GetDirectoryInfo(
-    const std::wstring & path,
+    const std::wstring& path,
     common::file_count_t offset,
-    common::Directory & dir)
+    common::Directory& dir)
 {
     using common::FileInformation;
     using common::FileType;
     using common::FileAttribute;
 
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind;
+    std::lock_guard<decltype(mutex_)> lk(mutex_);
 
-    hFind = FindFirstFileW(
-        (std::wstring(path.c_str()) += L"\\*").c_str(), &ffd);
-
-    if (hFind == INVALID_HANDLE_VALUE)
-        return -1;
-
-    const common::file_count_t givenOffset = offset;
-    common::file_count_t count = 0;
-    dir.path = path;
-
-    bool success = true;
-    do
+    // 요청된 directory가 cache되있지 않거나, 새로운 정보를 요구하는 경우에만,
+    //   디렉토리 탐색을 수행한다.
+    if (path != cachedDir_.path || offset == 0)
     {
-        if (offset > 0)
+        cachedDir_.path = path;
+        cachedDir_.fileInfos.clear();
+
+        WIN32_FIND_DATA ffd;
+        HANDLE hFind;
+
+        hFind = FindFirstFileW(
+            (std::wstring(path.c_str()) += L"\\*").c_str(), &ffd);
+
+        if (hFind == INVALID_HANDLE_VALUE)
+            return -1;
+
+        bool success = true;
+        do
         {
-            --offset;
-            continue;
-        }
+            FileInformation fileInfo;
 
-        FileInformation fileInfo;
+            fileInfo.fileName = ffd.cFileName;
+            fileInfo.modifiedDate =
+                filetime_to_time_t(ffd.ftLastWriteTime);
+            fileInfo.fileAttr = FileAttribute::NoFlag;
 
-        fileInfo.fileName = ffd.cFileName;
-        fileInfo.modifiedDate =
-            filetime_to_time_t(ffd.ftLastWriteTime);
-        fileInfo.fileAttr = FileAttribute::NoFlag;
+            if (ffd.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)
+            {
+                fileInfo.fileAttr |= FileAttribute::System;
+            }
+            if (ffd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+            {
+                fileInfo.fileAttr |= FileAttribute::Hidden;
+            }
 
-        if (ffd.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)
-        {
-            fileInfo.fileAttr |= FileAttribute::System;
-        }
-        if (ffd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
-        {
-            fileInfo.fileAttr |= FileAttribute::Hidden;
-        }
+            if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+                fileInfo.fileType = FileType::Directory;
+            }
+            else
+            {
+                fileInfo.fileType = FileType::File;
 
-        if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-        {
-            fileInfo.fileType = FileType::Directory;
-        }
-        else
-        {
-            fileInfo.fileType = FileType::File;
+                LARGE_INTEGER filesize;
+                filesize.LowPart = ffd.nFileSizeLow;
+                filesize.HighPart = ffd.nFileSizeHigh;
 
-            LARGE_INTEGER filesize;
-            filesize.LowPart = ffd.nFileSizeLow;
-            filesize.HighPart = ffd.nFileSizeHigh;
+                fileInfo.fileSize = filesize.QuadPart;
+            }
 
-            fileInfo.fileSize = filesize.QuadPart;
-        }
+            cachedDir_.fileInfos.push_back(std::move(fileInfo));
 
-        dir.fileInfos.push_back(std::move(fileInfo));
+        } while (success = FindNextFileW(hFind, &ffd));
 
-        // 한번에 얻을 수 있는 최대 파일 수는 정해져 있다.
-        if (++count > MaxGotFileCount)
-            break;
+        if (!success && GetLastError() != ERROR_NO_MORE_FILES)
+            return -1;
 
-    } while (success = FindNextFileW(hFind, &ffd));
+        FindClose(hFind);
+    }
 
-    if (!success && GetLastError() != ERROR_NO_MORE_FILES)
-        return -1;
+    // 요청한 directory 정보를 구성한다.
+    dir.path = path;
+    dir.fileInfos.clear();
 
-    FindClose(hFind);
+    auto offsetLimit = (std::min)(
+        static_cast<common::file_count_t>(cachedDir_.fileInfos.size()),
+        offset + MaxGotFileCount);
+
+    for (auto i = offset; i < offsetLimit; ++i)
+        dir.fileInfos.push_back(cachedDir_.fileInfos[i]);
 
     // 서비스 수행 사실을 보고한다.
-    watcher_->GetDirectoryInfo(path, givenOffset);
+    watcher_->GetDirectoryInfo(path, offset);
 
     return 0;
 }
