@@ -707,7 +707,6 @@ void CClientDialog::UpdateFileListView_()
                 isDir);
 
             tm* tm = std::localtime(&childTree->f.modifiedDate);
-
             char dateStringBuffer[30];
             snprintf(dateStringBuffer, 30, "%d-%02d-%02d %02d:%02d:%02d",
                 tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,

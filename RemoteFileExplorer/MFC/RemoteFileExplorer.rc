@@ -157,7 +157,7 @@ CAPTION "About Remote File Explorer"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "Remote File Explorer, Version 0.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Remote File Explorer, v0.1.1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2017 Taeguk Kwon",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "»Æ¿Œ",IDOK,113,41,50,14,WS_GROUP
 END
@@ -219,12 +219,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Taeguk Kwon"
             VALUE "FileDescription", "Remote File Explorer"
-            VALUE "FileVersion", "0.1.0.0"
+            VALUE "FileVersion", "0.1.1.0"
             VALUE "InternalName", "RemoteFileExplorer.exe"
             VALUE "LegalCopyright", "(c) Taeguk Kwon.  All rights reserved."
             VALUE "OriginalFilename", "RemoteFileExplorer.exe"
             VALUE "ProductName", "Remote File Explorer"
-            VALUE "ProductVersion", "0.1.0.0"
+            VALUE "ProductVersion", "0.1.1.0"
         END
     END
     BLOCK "VarFileInfo"
