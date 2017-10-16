@@ -69,7 +69,7 @@ CRemoteFileExplorerApp::CRemoteFileExplorerApp()
 
     // 아래 응용 프로그램 ID 문자열을 고유 ID 문자열로 바꾸십시오(권장).
     // 문자열에 대한 서식: CompanyName.ProductName.SubProduct.VersionInformation
-    SetAppID(_T("RemoteFileExplorer.AppID.0.1.1.0"));
+    SetAppID(_T("RemoteFileExplorer.AppID.0.1.1.1"));
 
     // 여기에 생성 코드를 추가합니다.
     // InitInstance에 모든 중요한 초기화 작업을 배치합니다.
