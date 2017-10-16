@@ -98,15 +98,6 @@ int ListenerThread::Start(
     serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddress.sin_port = htons(port_);
 
-    // 바인드 시, Already In Use 문제 회피.
-    int option = 1;
-    setsockopt(
-        hServerSocket_,
-        SOL_SOCKET,
-        SO_REUSEADDR,
-        (const char *) &option,
-        sizeof(option));
-
     // 바인드.
     if (bind(
         hServerSocket_,
