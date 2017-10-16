@@ -153,12 +153,12 @@ END
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "RemoteFileExplorer 정보"
+CAPTION "About Remote File Explorer"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "RemoteFileExplorer, 버전 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2017",IDC_STATIC,42,26,114,8
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    LTEXT           "Remote File Explorer, Version 0.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2017 Taeguk Kwon",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,41,50,14,WS_GROUP
 END
 
@@ -201,8 +201,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 0,1,0,0
+ PRODUCTVERSION 0,1,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -215,16 +215,16 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "041204B0"
+        BLOCK "041204b0"
         BEGIN
-            VALUE "CompanyName", "TAEGUK: <회사 이름>"
-            VALUE "FileDescription", "RemoteFileExplorer"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "CompanyName", "Taeguk Kwon"
+            VALUE "FileDescription", "Remote File Explorer"
+            VALUE "FileVersion", "0.1.0.0"
             VALUE "InternalName", "RemoteFileExplorer.exe"
-            VALUE "LegalCopyright", "TAEGUK: (c) <회사 이름>.  All rights reserved."
+            VALUE "LegalCopyright", "(c) Taeguk Kwon.  All rights reserved."
             VALUE "OriginalFilename", "RemoteFileExplorer.exe"
-            VALUE "ProductName", "TAEGUK: <제품 이름>"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductName", "Remote File Explorer"
+            VALUE "ProductVersion", "0.1.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -305,6 +305,11 @@ BEGIN
     0, 22, 97, 78
 END
 
+IDD_ABOUTBOX AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -373,12 +378,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "RemoteFileExplorer"
+    IDR_MAINFRAME           "Remote File Explorer"
 END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "RemoteFileExplorer"
+    AFX_IDS_APP_TITLE       "Remote File Explorer By taeguk (http://taeguk.me)"
     AFX_IDS_IDLEMESSAGE     "준비"
 END
 

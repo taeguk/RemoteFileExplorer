@@ -4,6 +4,7 @@
 #include <commoncontrols.h>
 #include <shellapi.h>
 
+#include <cassert>
 #include <map>
 
 #include "MFC/Client/CClientDialog.h"
