@@ -58,6 +58,15 @@ void CServerDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+BOOL CServerDialog::PreTranslateMessage(MSG* pMsg)
+{
+    if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE)
+        return TRUE;
+
+    return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 BEGIN_MESSAGE_MAP(CServerDialog, CDialogEx)
     ON_BN_CLICKED(IDC_MFCBUTTON_SERVER_CONTROL,
         &CServerDialog::OnBnClickedMfcbuttonServerControl)

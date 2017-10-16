@@ -84,6 +84,7 @@ public:
 protected:
     virtual BOOL OnInitDialog() override;
     virtual void DoDataExchange(CDataExchange* pDX) override; // DDX/DDV 지원입니다.
+    virtual BOOL PreTranslateMessage(MSG* pMsg) override;
 
     DECLARE_MESSAGE_MAP()
     afx_msg void OnBnClickedMfcbuttonClientControl();

@@ -115,6 +115,15 @@ void CClientDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+BOOL CClientDialog::PreTranslateMessage(MSG* pMsg)
+{
+    if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE)
+        return TRUE;
+
+    return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 BEGIN_MESSAGE_MAP(CClientDialog, CDialogEx)
     ON_BN_CLICKED(IDC_MFCBUTTON_CLIENT_CONTROL,
         &CClientDialog::OnBnClickedMfcbuttonClientControl)
