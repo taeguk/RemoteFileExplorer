@@ -1,4 +1,4 @@
-#include "Server/Network/ClientMessageHandler.h"
+#include "Server/ClientMessageHandler.h"
 
 #include "Message/GetLogicalDriveInfoMessage.h"
 #include "Message/GetDirectoryInfoMessage.h"
@@ -7,11 +7,9 @@ namespace remoteFileExplorer
 {
 namespace server
 {
-namespace network
-{
 ///////////////////////////////////////////////////////////////////////////////
 int HandleClientMessage(
-    ClientSession& session,
+    network::ClientSession& session,
     const std::uint8_t* recvBuffer,
     std::size_t recvBufferSize,
     std::uint8_t* sendBuffer,
@@ -43,7 +41,7 @@ int HandleClientMessage(
 
 ///////////////////////////////////////////////////////////////////////////////
 std::unique_ptr<message::ServerMessage> HandleClientMessage(
-    ClientSession& session,
+    network::ClientSession& session,
     message::ClientMessage& clientMessage)
 {
     using namespace message;
@@ -98,6 +96,5 @@ std::unique_ptr<message::ServerMessage> HandleClientMessage(
     }
 }
 
-} // namespace network
 } // namespace server
 } // namespace remoteFileExplorer

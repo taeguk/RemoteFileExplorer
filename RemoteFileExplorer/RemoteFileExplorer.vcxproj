@@ -204,11 +204,11 @@
     <ClInclude Include="MFC\Server\FileExplorerWatcher.h" />
     <ClInclude Include="MFC\stdafx.h" />
     <ClInclude Include="MFC\targetver.h" />
+    <ClInclude Include="Server\ClientMessageHandler.h" />
     <ClInclude Include="Server\FileExplorerService.h" />
     <ClInclude Include="Server\FileExplorerServiceInterface.h" />
     <ClInclude Include="Server\FileExplorerWatcherInterface.h" />
     <ClInclude Include="Server\Network\ClientHandlerThread.h" />
-    <ClInclude Include="Server\Network\ClientMessageHandler.h" />
     <ClInclude Include="Server\Network\ClientSession.h" />
     <ClInclude Include="Server\Network\ListenerThread.h" />
     <ClInclude Include="Server\Network\IOContext.h" />
@@ -229,9 +229,9 @@
     <ClCompile Include="MFC\Server\CServerDialog.cpp" />
     <ClCompile Include="MFC\Server\FileExplorerWatcher.cpp" />
     <ClCompile Include="MFC\stdafx.cpp" />
+    <ClCompile Include="Server\ClientMessageHandler.cpp" />
     <ClCompile Include="Server\FileExplorerService.cpp" />
     <ClCompile Include="Server\Network\ClientHandlerThread.cpp" />
-    <ClCompile Include="Server\Network\ClientMessageHandler.cpp" />
     <ClCompile Include="Server\Network\ListenerThread.cpp" />
     <ClCompile Include="Server\Network\IOContext.cpp" />
     <ClCompile Include="Server\Server.cpp" />

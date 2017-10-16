@@ -1,6 +1,6 @@
 #include "Server/Network/ClientHandlerThread.h"
 
-#include "Server/Network/ClientMessageHandler.h"
+#include "Server/ClientMessageHandler.h"
 #include "Server/Network/IOContext.h"
 
 namespace remoteFileExplorer
