@@ -706,8 +706,14 @@ void CClientDialog::UpdateFileListView_()
                 FileIconType::Small,
                 isDir);
 
-            auto dateString = CString(std::strtok(std::asctime(std::localtime(
-                &childTree->f.modifiedDate)), "\n"));
+            tm* tm = std::localtime(&childTree->f.modifiedDate);
+
+            char dateStringBuffer[30];
+            snprintf(dateStringBuffer, 30, "%d-%02d-%02d %02d:%02d:%02d",
+                tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
+                tm->tm_hour, tm->tm_min, tm->tm_sec);
+
+            auto dateString = CString(dateStringBuffer);
             auto typeString = isDir ? _T("Directory") : _T("File");
             auto sizeString = isDir ? CString(_T("")) :
                 CString((std::to_string(childTree->f.fileSize) + " B").c_str());
