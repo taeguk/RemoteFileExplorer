@@ -1,5 +1,7 @@
 #include "Client/Network/ServerConnector.h"
 
+#include "Utils/Utils.h"
+
 namespace remoteFileExplorer
 {
 namespace client
@@ -30,9 +32,21 @@ int ServerConnector::Connect(std::uint8_t ipAddress[4], std::uint16_t port)
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
         return -1;
 
+    auto wsaRAII = utils::CreateRAIIWrapper([this]()
+    {
+        if (!connected_)
+            (void) WSACleanup();
+    });
+
     hSocket_ = WSASocket(PF_INET, SOCK_STREAM, 0, nullptr, 0, 0);
     if (hSocket_ == INVALID_SOCKET)
         return -1;
+
+    auto socketRAII = utils::CreateRAIIWrapper([this]()
+    {
+        if (!connected_)
+            (void) closesocket(hSocket_);
+    });
 
     memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;

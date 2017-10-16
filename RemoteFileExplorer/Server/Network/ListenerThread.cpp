@@ -44,8 +44,23 @@ int ListenerThread::Start(
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
         return -1;
 
+    auto wsaRAII = utils::CreateRAIIWrapper([this]()
+    {
+        if (!isStarted_)
+            (void) WSACleanup();
+    });
+
+    // Completion Port 持失.
     hCompletionPort_ =
         CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
+    if (hCompletionPort_ == nullptr)
+        return -1;
+
+    auto cpRAII = utils::CreateRAIIWrapper([this]()
+    {
+        if (!isStarted_)
+            (void) CloseHandle(hCompletionPort_);
+    });
 
     // Client Handler Thread 級 持失.
     handlerThreads_.reserve(threadNumber_);
@@ -59,9 +74,23 @@ int ListenerThread::Start(
             });
     }
 
+    auto handlerRAII = utils::CreateRAIIWrapper([this]()
+    {
+        if (!isStarted_)
+            handlerThreads_.clear();
+    });
+
     // Server Socket (Listener Socket) 持失.
     hServerSocket_ =
         WSASocket(AF_INET, SOCK_STREAM, 0, nullptr, 0, WSA_FLAG_OVERLAPPED);
+    if (hServerSocket_ == INVALID_SOCKET)
+        return -1;
+
+    auto socketRAII = utils::CreateRAIIWrapper([this]()
+    {
+        if (!isStarted_)
+            (void) closesocket(hServerSocket_);
+    });
 
     SOCKADDR_IN serverAddress;
     memset(&serverAddress, 0, sizeof(serverAddress));

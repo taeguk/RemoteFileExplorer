@@ -49,6 +49,7 @@ int ClientHandlerThread::ThreadMain_()
         );
 
         // Time Out.
+        // 이런 방식보다는 PostQueuedCompletionStatus를 이용한 종료방법을 사용하자.
         if (!success && overlapped == nullptr)
             continue;
 
