@@ -35,7 +35,14 @@ enum class FileSpecialBehavior
     None,
     CurrentDirectory,  // "." Directory
     ParentDirectory    // ".." Directory
+};
 
+///////////////////////////////////////////////////////////////////////////////
+enum class FileIconType
+{
+    Big,
+    Medium,
+    Small,
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,6 +119,12 @@ private:
     // 파일이 View들에서 보여져야하는 지 아닌지를 반환하는 함수.
     bool CheckFileShouldBeShown_(FileTree* fileTree);
 
+    // File List Control의 ImageList에서 file icon image의 index를 얻는 함수.
+    int GetFileIconImageIndex_(
+        const CString& fileName,
+        FileIconType fileIconSizeType,
+        bool isDir);
+
     ///////////////////////////////////////////////////////////////////////////////
     remoteFileExplorer::client::RemoteFileExplorer remoteFileExplorer_;
     ClientStatus status_{ ClientStatus::Disconnected };
@@ -120,12 +133,21 @@ private:
     CEdit portEdit_;
     CMFCButton controlButton_;
 
-    FileTree fileTreeVRoot_; // 가상의 root. 이 root 밑에는 drive들이 위치한다.
     CTreeCtrl dirTreeControl_;
-    HICON hDriveIcon_;  // Dir Tree View에서 drive에 보여질 아이콘.
-    HICON hFolderIcon_; // Dir Tree View에서 folder에 보여진 아이콘.
+    // 가상의 root. 이 root 밑에는 drive들이 위치한다.
+    FileTree fileTreeVRoot_;
+    // Dir Tree Control의 ImageList에서 drive icon image의 index.
+    int nImageDrive_;
+    // Dir Tree Control의 ImageList에서 directory icon image의 index.
+    int nImageDir_;
 
     CListCtrl fileListControl_;
+    // File List Control에서 사용되는 ImageList들.
+    // 각각 큰 아이콘, 보통 아이콘, 작은 아이콘을 위한 ImageList이다.
+    CImageList* bigFileImageList_;
+    CImageList* mediumFileImageList_;
+    CImageList* smallFileImageList_;
+
     // 현재 File List View가 나타내고 있는 directory를 의미한다.
     FileTree* curDirTree_{ nullptr };
 

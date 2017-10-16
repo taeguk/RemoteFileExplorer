@@ -15,14 +15,6 @@ namespace mfc
 {
 namespace client
 {
-///////////////////////////////////////////////////////////////////////////////
-namespace /*unnamed*/
-{
-// File List View에서 보여질 Icon에 대한 핸들을 얻는 함수.
-HICON GetFileIcon(const CString& fileName, ViewMode viewMode, bool isDir);
-} // unnamed namespace
-
-///////////////////////////////////////////////////////////////////////////////
 IMPLEMENT_DYNAMIC(CClientDialog, CDialogEx)
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,24 +35,6 @@ BOOL CClientDialog::OnInitDialog()
         return FALSE;
 
     //
-    SHFILEINFO sfi = { 0, };
-    SHGetFileInfo(
-        _T("C:\\"),
-        FILE_ATTRIBUTE_DIRECTORY,
-        &sfi,
-        sizeof(SHFILEINFO),
-        SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
-    hDriveIcon_ = sfi.hIcon;
-
-    SHGetFileInfo(
-        _T("dummy"),
-        FILE_ATTRIBUTE_DIRECTORY,
-        &sfi,
-        sizeof(SHFILEINFO),
-        SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
-    hFolderIcon_ = sfi.hIcon;
-
-    //
     ipAddressCtrl_.SetAddress(127, 0, 0, 1);
     portEdit_.SetWindowTextW(_T("9622"));
 
@@ -75,8 +49,50 @@ BOOL CClientDialog::OnInitDialog()
     viewModeComboBox_.AddString(_T("Icon"));
     viewModeComboBox_.AddString(_T("Simple"));
     viewModeComboBox_.AddString(_T("Report"));
-
     viewModeComboBox_.SetCurSel(utils::to_underlying(ViewMode::BigIcon));
+
+    //
+    SHFILEINFO sfi = { 0, };
+    SHGetFileInfo(
+        _T("C:\\"),
+        FILE_ATTRIBUTE_DIRECTORY,
+        &sfi,
+        sizeof(SHFILEINFO),
+        SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
+    // Dir Tree View에서 drive에 보여질 아이콘.
+    HICON hDriveIcon = sfi.hIcon;
+
+    SHGetFileInfo(
+        _T("dummy"),
+        FILE_ATTRIBUTE_DIRECTORY,
+        &sfi,
+        sizeof(SHFILEINFO),
+        SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
+    // Dir Tree View에서 directory에 보여질 아이콘.
+    HICON hDirIcon = sfi.hIcon;
+
+    CImageList* dirTreeImageList = new CImageList;
+    dirTreeImageList->Create(16, 16, ILC_COLOR32, 2, 0);
+    dirTreeImageList->SetBkColor(RGB(255, 255, 255));
+    nImageDrive_ = dirTreeImageList->Add(hDriveIcon);
+    nImageDir_ = dirTreeImageList->Add(hDirIcon);
+    dirTreeControl_.SetImageList(dirTreeImageList, TVSIL_NORMAL);
+
+    DestroyIcon(hDriveIcon);
+    DestroyIcon(hDirIcon);
+
+    //
+    bigFileImageList_ = new CImageList;
+    bigFileImageList_->Create(64, 64, ILC_COLOR32, 2, 0);
+    bigFileImageList_->SetBkColor(RGB(255, 255, 255));
+
+    mediumFileImageList_ = new CImageList;
+    mediumFileImageList_->Create(32, 32, ILC_COLOR32, 2, 0);
+    mediumFileImageList_->SetBkColor(RGB(255, 255, 255));
+
+    smallFileImageList_ = new CImageList;
+    smallFileImageList_->Create(16, 16, ILC_COLOR32, 2, 0);
+    smallFileImageList_->SetBkColor(RGB(255, 255, 255));
 
     return TRUE;
 }
@@ -347,11 +363,6 @@ int CClientDialog::InitializeView_()
     dirTreeControl_.DeleteAllItems();
 
     auto numDrives = drives.size();
-
-    CImageList* imageListTree = new CImageList;
-    imageListTree->Create(16, 16, ILC_COLOR32, numDrives, 0);
-    imageListTree->SetBkColor(RGB(255, 255, 255));
-
     for (auto i = 0; i < numDrives; ++i)
     {
         CString drivePath = CString(drives[i].letter) + ":";
@@ -359,8 +370,10 @@ int CClientDialog::InitializeView_()
         
         CString text = driveName + _T('(') + drives[i].letter + _T(":)");
 
-        imageListTree->Add(hDriveIcon_);
-        HTREEITEM hItem = dirTreeControl_.InsertItem(text, i, i);
+        HTREEITEM hItem = dirTreeControl_.InsertItem(
+            text,
+            nImageDrive_,
+            nImageDrive_);
 
         std::unique_ptr<FileTree> fileTree = std::make_unique<FileTree>();
         fileTree->f.fileAttr = common::FileAttribute::NoFlag;
@@ -373,8 +386,6 @@ int CClientDialog::InitializeView_()
         dirTreeControl_.SetItemData(hItem, (DWORD_PTR) fileTree.get());
         fileTreeVRoot_.childs.push_back(std::move(fileTree));
     }
-
-    dirTreeControl_.SetImageList(imageListTree, TVSIL_NORMAL);
 
     return 0;
 }
@@ -392,8 +403,6 @@ void CClientDialog::ClearFileTreeChilds_(FileTree* parentTree)
 {
     assert(parentTree != nullptr);
 
-    CImageList* imageList = dirTreeControl_.GetImageList(TVSIL_NORMAL);
-
     for (const auto& child : parentTree->childs)
     {
         ClearFileTreeChilds_(child.get());
@@ -405,15 +414,6 @@ void CClientDialog::ClearFileTreeChilds_(FileTree* parentTree)
                 curDirTree_ = nullptr;
                 dirTreeControl_.SelectItem(nullptr);
                 UpdateFileListView_();
-            }
-            // 이미지 리스트에서 item에 해당하는 이미지를 지운다.
-            int nImage, nSelectedImage;
-            if (dirTreeControl_.GetItemImage(
-                child->hTreeItem,
-                nImage,
-                nSelectedImage))
-            {
-                imageList->Remove(nImage);
             }
 
             // item을 삭제한다.
@@ -437,8 +437,6 @@ void CClientDialog::UpdateDirTreeView_(FileTree* parentTree)
 {
     assert(parentTree->hTreeItem != nullptr);
 
-    CImageList* imageList = dirTreeControl_.GetImageList(TVSIL_NORMAL);
-
     HTREEITEM hParent = parentTree->hTreeItem;
     HTREEITEM hInsertAfter = TVI_FIRST;
     auto childCount = parentTree->childs.size();
@@ -459,11 +457,13 @@ void CClientDialog::UpdateDirTreeView_(FileTree* parentTree)
         // 보여져야하는데 숨겨져 있는 경우,
         if (show && childTree->hTreeItem == nullptr)
         {
-            auto nImage = imageList->Add(hFolderIcon_);
-            auto hItem =
-                dirTreeControl_.InsertItem(
-                    CString(childTree->f.fileName.c_str()),
-                    nImage, nImage, hParent, hInsertAfter);
+            auto hItem = dirTreeControl_.InsertItem(
+                CString(childTree->f.fileName.c_str()),
+                nImageDir_,
+                nImageDir_,
+                hParent,
+                hInsertAfter);
+
             assert(hItem != nullptr);
             childTree->hTreeItem = hItem;
             dirTreeControl_.SetItemData(hItem, (DWORD_PTR) childTree);
@@ -473,16 +473,6 @@ void CClientDialog::UpdateDirTreeView_(FileTree* parentTree)
         {
             // 자식들을 모두 삭제한다.
             ClearFileTreeChilds_(childTree);
-
-            // 이미지 리스트에서 item에 해당하는 이미지를 지운다.
-            int nImage, nSelectedImage;
-            if (dirTreeControl_.GetItemImage(
-                childTree->hTreeItem,
-                nImage,
-                nSelectedImage))
-            {
-                imageList->Remove(nImage);
-            }
 
             // item을 삭제한다.
             dirTreeControl_.DeleteItem(childTree->hTreeItem);
@@ -522,60 +512,55 @@ void CClientDialog::UpdateFileListView_()
         viewMode == ViewMode::Icon ||
         viewMode == ViewMode::Simple)
     {
-        UINT styleFlag;
+        FileIconType fileIconType;
         int imageSize;
-        int nImageList;
+        UINT styleFlag;
+        CImageList* imageList;
+        int nImageListType;
 
         switch (viewMode)
         {
         case ViewMode::BigIcon:
+            fileIconType = FileIconType::Big;
             imageSize = 64;
             styleFlag = LVS_ICON;
-            nImageList = TVSIL_NORMAL;
+            imageList = bigFileImageList_;
+            nImageListType = TVSIL_NORMAL;
             break;
         case ViewMode::Icon:
+            fileIconType = FileIconType::Medium;
             imageSize = 32;
             styleFlag = LVS_ICON;
-            nImageList = TVSIL_NORMAL;
+            imageList = mediumFileImageList_;
+            nImageListType = TVSIL_NORMAL;
             break;
         case ViewMode::Simple:
         default:
+            fileIconType = FileIconType::Small;
             imageSize = 16;
             styleFlag = LVS_LIST;
-            nImageList = LVSIL_SMALL;
+            imageList = smallFileImageList_;
+            nImageListType = LVSIL_SMALL;
         }
 
         fileListControl_.ModifyStyle(
             LVS_ICON | LVS_REPORT | LVS_SMALLICON | LVS_LIST, styleFlag);
-
-        CImageList* imageList = new CImageList;
-        // Create가 실패한다면, GDI Object leak을 의심해봐야 한다.
-        assert(imageList->Create(
-            imageSize,
-            imageSize,
-            ILC_COLOR32,
-            curDirTree_->childs.size(),
-            0));
-        imageList->SetBkColor(RGB(255, 255, 255));
+        fileListControl_.SetImageList(imageList, nImageListType);
 
         int nItem = 0;
         for (const auto& childTree : curDirTree_->childs)
         {
+            // 보여져야하는 파일이 아니면 무시한다.
             if (!CheckFileShouldBeShown_(childTree.get()))
                 continue;
 
             CString fileName(childTree->f.fileName.c_str());
-            HICON hIcon = GetFileIcon(
-                fileName,
-                viewMode,
-                childTree->f.fileType == common::FileType::Directory);
-
-            int nImage = imageList->Add(hIcon);
+            bool isDir = childTree->f.fileType == common::FileType::Directory;
+            int nImage = GetFileIconImageIndex_(fileName, fileIconType, isDir);
 
             fileListControl_.InsertItem(nItem, fileName, nImage);
             fileListControl_.SetItemData(nItem++, (DWORD_PTR) childTree.get());
         }
-        fileListControl_.SetImageList(imageList, nImageList);
     }
     // 자세히 모드.
     else // ViewMode::Report
@@ -587,27 +572,21 @@ void CClientDialog::UpdateFileListView_()
         fileListControl_.InsertColumn(1, _T("Modified Date"), LVCFMT_LEFT, 90);
         fileListControl_.InsertColumn(2, _T("Type"), LVCFMT_LEFT, 90);
         fileListControl_.InsertColumn(3, _T("Size"), LVCFMT_LEFT, 90);
-
-        CImageList* imageList = new CImageList;
-        // Create가 실패한다면, GDI Object leak을 의심해봐야 한다.
-        assert(imageList->Create(
-            16,
-            16,
-            ILC_COLOR32,
-            curDirTree_->childs.size(),
-            0));
-        imageList->SetBkColor(RGB(255, 255, 255));
+        fileListControl_.SetImageList(smallFileImageList_, LVSIL_SMALL);
 
         int nItem = 0;
         for (const auto& childTree : curDirTree_->childs)
         {
+            // 보여져야하는 파일이 아니면 무시한다.
             if (!CheckFileShouldBeShown_(childTree.get()))
                 continue;
 
-            bool isDir = childTree->f.fileType == common::FileType::Directory;
             CString fileName(childTree->f.fileName.c_str());
-            HICON hIcon = GetFileIcon(fileName, viewMode, isDir);
-            int nImage = imageList->Add(hIcon);
+            bool isDir = childTree->f.fileType == common::FileType::Directory;
+            int nImage = GetFileIconImageIndex_(
+                fileName,
+                FileIconType::Small,
+                isDir);
 
             auto dateString = CString(std::strtok(std::asctime(std::localtime(
                 &childTree->f.modifiedDate)), "\n"));
@@ -621,7 +600,6 @@ void CClientDialog::UpdateFileListView_()
             fileListControl_.SetItemText(nIndex, 3, sizeString);
             fileListControl_.SetItemData(nItem++, (DWORD_PTR) childTree.get());
         }
-        fileListControl_.SetImageList(imageList, LVSIL_SMALL);
 
         // Column Width 조정.
         assert(fileListControl_.GetHeaderCtrl()->GetItemCount() == 4);
@@ -653,37 +631,22 @@ bool CClientDialog::CheckFileShouldBeShown_(FileTree* fileTree)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace /*unnamed*/
+int CClientDialog::GetFileIconImageIndex_(
+    const CString& fileName,
+    FileIconType fileIconType,
+    bool isDir)
 {
-HICON GetFileIcon(const CString& fileName, ViewMode viewMode, bool isDir)
-{
-    // 과도한 GDI Object 생성을 막기 위해, icon handle pool을 만들어 쓴다.
-    // (extension, icon level, isDir) -> icon handle 로의 mapping.
-    static std::map<std::pair<CString, UINT>, HICON> fileIconMap;
-    static std::map<UINT, HICON> dirIconMap;
+    // CString -> file extension.
+    // FileIconType -> file icon type.
+    // bool -> is directory?
+    using MapKey = std::tuple<CString, FileIconType, bool>;
 
-    // icon level은 icon의 선명도(크기)를 의미한다.
-    // 0 에 가까울 수록 선명도가 좋다. (=아이콘 크기가 크다.)
-    static const UINT IconSizeFlagMax = 3;
-    static const UINT IconSizeFlag[IconSizeFlagMax] = {
-        SHGFI_SYSICONINDEX, SHGFI_LARGEICON, SHGFI_SMALLICON
-    };
-    UINT orgIconLevel;
-
-    // view mode에 따라 icon level를 달리한다.
-    switch (viewMode)
-    {
-    case ViewMode::BigIcon:
-        orgIconLevel = 0;
-        break;
-    case ViewMode::Icon:
-        orgIconLevel = 1;
-        break;
-    case ViewMode::Simple:
-    case ViewMode::Report:
-    default:
-        orgIconLevel = 2;
-    }
+    // 과도한 GDI Object 생성과 ImageList.Add()를 막기 위해,
+    //   icon image index pool(cache)을 만들어 쓴다.
+    // MapKey -> icon image index 로의 mapping.
+    static std::map<MapKey, int> fileImageMap;
+    // MapKeyType -> icon handle 로의 mapping.
+    //static std::map<MapKey, HICON> fileIconMap;
 
     // icon을 얻어 올 때는, 전체파일명이 아니라 확장자명만 있으면 된다.
     CString extension = _T("dummy");
@@ -696,104 +659,100 @@ HICON GetFileIcon(const CString& fileName, ViewMode viewMode, bool isDir)
             extension = fileName.Right(fileName.GetLength() - pos).MakeLower();
     }
 
+    // 필요한 icon image가 cache에 이미 존재하는지를 확인한다.
+    MapKey mapKey = std::make_tuple(extension, fileIconType, isDir);
+    auto it = fileImageMap.find(mapKey);
+    if (it != std::end(fileImageMap))
+        return it->second;
+
     HICON hIcon = nullptr;
     SHFILEINFO sfi = { 0, };
     UINT flag = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES;
 
+    switch (fileIconType)
+    {
+    case FileIconType::Big:
+    case FileIconType::Medium:
+        flag |= SHGFI_LARGEICON;
+        break;
+    case FileIconType::Small:
+        flag |= SHGFI_SMALLICON;
+        break;
+    default:
+        assert(false);
+    }
+
     CoInitialize(nullptr);
 
-    // 최종적으로 얻어진 icon의 level을 의미한다.
-    UINT gotIconLevel = IconSizeFlagMax;
+    // medium icon 혹은 small icon을 구한다.
+    HRESULT hResult = SHGetFileInfo(
+        extension,
+        (isDir ? FILE_ATTRIBUTE_DIRECTORY : FILE_ATTRIBUTE_NORMAL),
+        &sfi,
+        sizeof(sfi),
+        flag);
 
-    // 원래 해당되는 icon level에 해당하는 icon을 얻으면 좋겠지만,
-    //   시스템에 따라 실패를 할 수도 있다.
-    // 따라서 실패를 하면, 좀 더 낮은 화질의 icon이라도 얻기 위해
-    //   반복적으로 시도한다.
-    for (auto iconLevel = orgIconLevel;
-        hIcon == nullptr && iconLevel <= IconSizeFlagMax;
-        ++iconLevel)
+    if (FAILED(hResult))
+        return -1;
+
+    hIcon = sfi.hIcon;
+
+    // Big icon이 요청된 경우,
+    if (fileIconType == FileIconType::Big)
     {
-        if (isDir)
+        // Medium icon이 이미 구해진 상태니,
+        //   이걸 image list와 cache에 저장한다.
         {
-            auto it = dirIconMap.find(iconLevel);
-            if (it != std::end(dirIconMap))
-            {
-                hIcon = it->second;
-                gotIconLevel = iconLevel;
-                break;
-            }
-        }
-        else
-        {
-            auto it = fileIconMap.find(std::make_pair(extension, iconLevel));
-            if (it != std::end(fileIconMap))
-            {
-                hIcon = it->second;
-                gotIconLevel = iconLevel;
-                break;
-            }
+            MapKey mediumMapKey =
+                std::make_tuple(extension, FileIconType::Medium, isDir);
+            int nImage = mediumFileImageList_->Add(hIcon);
+            assert(nImage >= 0);
+            fileImageMap[mediumMapKey] = nImage;
         }
 
-        HRESULT hResult = SHGetFileInfo(
-            extension,
-            (isDir ? FILE_ATTRIBUTE_DIRECTORY : FILE_ATTRIBUTE_NORMAL),
-            &sfi,
-            sizeof(sfi),
-            flag);
+        // System image list를 얻는다.
+        HIMAGELIST* systemImageList;
+        hResult = SHGetImageList(
+            SHIL_JUMBO,
+            IID_IImageList,
+            (void**) &systemImageList);
 
-        if (FAILED(hResult))
-            continue;
-
-        if (IconSizeFlag[iconLevel] == SHGFI_SYSICONINDEX) {
-            // System image list를 얻는다.
-            HIMAGELIST* imageList;
-            hResult = SHGetImageList(
-                SHIL_JUMBO,
-                IID_IImageList,
-                (void**)&imageList);
-
-            if (FAILED(hResult))
-            {
-                DestroyIcon(sfi.hIcon);
-                continue;
-            }
-
+        if (SUCCEEDED(hResult))
+        {
             // System image list으로 부터, icon을 얻어온다.
-            hResult = ((IImageList*)imageList)->GetIcon(
+            hResult = ((IImageList*) systemImageList)->GetIcon(
                 sfi.iIcon,
                 ILD_TRANSPARENT,
                 &hIcon);
 
-            if (FAILED(hResult))
-            {
+            // Big icon을 구하는 데 성공했으므로,
+            //   이전에 구한 medium icon은 삭제한다.
+            if (SUCCEEDED(hResult))
                 DestroyIcon(sfi.hIcon);
-                continue;
-            }
         }
-        else {
-            hIcon = sfi.hIcon;
-        }
-
-        gotIconLevel = iconLevel;
-        if (isDir)
-            dirIconMap[iconLevel] = hIcon;
-        else
-            fileIconMap[std::make_pair(extension, iconLevel)] = hIcon;
     }
 
-    // 최종적으로 얻은 icon level부터 원래 얻으려했던 icon level에까지,
-    //   전부 다 cache 해놓는다.
-    while (gotIconLevel-- > orgIconLevel)
+    // 구한 icon을 image list와 cache에 저장한다.
+    int nImage;
+    switch (fileIconType)
     {
-        if (isDir)
-            dirIconMap[gotIconLevel] = hIcon;
-        else
-            fileIconMap[std::make_pair(extension, gotIconLevel)] = hIcon;
+    case FileIconType::Big:
+        nImage = bigFileImageList_->Add(hIcon);
+        break;
+    case FileIconType::Medium:
+        nImage = mediumFileImageList_->Add(hIcon);
+        break;
+    case FileIconType::Small:
+        nImage = smallFileImageList_->Add(hIcon);
+        break;
+    default:
+        assert(false);
     }
+    fileImageMap[mapKey] = nImage;
+    DestroyIcon(hIcon);
 
-    return hIcon;
+    return nImage;
 }
-} // unnamed namespace
 
 } // namespace client
 } // namespace mfc
