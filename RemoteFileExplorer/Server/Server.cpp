@@ -41,7 +41,7 @@ int Server::Start(
         threadNumber = systemInfo.dwNumberOfProcessors * 2;
     }
 
-    listenerThread_.release();
+    listenerThread_.reset();
     listenerThread_ = std::make_unique<network::ListenerThread>();
     if (listenerThread_->Start(
         port,
@@ -64,7 +64,7 @@ int Server::Stop()
     if (!started_)
         return -1;
 
-    listenerThread_.release();
+    listenerThread_.reset();
     started_ = false;
 
     return 0;
