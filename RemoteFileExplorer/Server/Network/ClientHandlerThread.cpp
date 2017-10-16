@@ -88,7 +88,8 @@ int ClientHandlerThread::ThreadMain_()
 
             // 수신 버퍼중 처리가 완료된 부분의 크기를 저장하는 변수.
             std::size_t processedBufferSize = 0;
-            
+            bool sessionDestroyFlag = false;
+
             // 수신 버퍼 내에 저장되어 있는 메세지들을 식별하고 처리한다.
             while (true)
             {
@@ -125,10 +126,8 @@ int ClientHandlerThread::ThreadMain_()
                     threadBuffer,
                     threadBufferSize) != 0)
                 {
-                    // 순서 중요!!!
-                    (void) fDestroyClientSession_(hSocket);
-                    delete recvContext;
-                    continue;
+                    sessionDestroyFlag = true;
+                    break;
                 }
 
                 // Request 처리 결과를 전송하기 위해 준비한다.
@@ -157,11 +156,19 @@ int ClientHandlerThread::ThreadMain_()
                 // 송신 요청이 실패 했을 경우,
                 if (ret == SOCKET_ERROR && WSAGetLastError() != ERROR_IO_PENDING)
                 {
-                    // 순서 중요!!!
-                    (void) fDestroyClientSession_(hSocket);
-                    delete recvContext;
-                    continue;
+                    sessionDestroyFlag = true;
+                    break;
                 }
+            }
+
+            // 클라이언트와 세션을 유지하기에 심각한 에러가 발생했을 경우,
+            //   클라이언트와의 연결을 끊는다. (세션을 종료한다.)
+            if (sessionDestroyFlag)
+            {
+                // 순서 중요!!!
+                (void) fDestroyClientSession_(hSocket);
+                delete recvContext;
+                continue;
             }
 
             // 수신버퍼 중 processedBufferSize 만큼을 처리했음을 알린다.

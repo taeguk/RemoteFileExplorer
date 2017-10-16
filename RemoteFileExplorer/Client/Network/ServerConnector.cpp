@@ -115,7 +115,7 @@ int ServerConnector::Communicate(
     {
         flags = 0;
         if (WSARecv(hSocket_, &wsabuf, 1, &recvBytes,
-            &flags, nullptr, nullptr) == SOCKET_ERROR)
+            &flags, nullptr, nullptr) == SOCKET_ERROR || recvBytes == 0)
         {
             return -1;
         }
@@ -130,7 +130,7 @@ int ServerConnector::Communicate(
     {
         flags = 0;
         if (WSARecv(hSocket_, &wsabuf, 1, &recvBytes,
-            &flags, nullptr, nullptr) == SOCKET_ERROR)
+            &flags, nullptr, nullptr) == SOCKET_ERROR || recvBytes == 0)
         {
             return -1;
         }
