@@ -13,8 +13,8 @@ namespace common
 ///////////////////////////////////////////////////////////////////////////////
 enum class FileType : std::uint8_t
 {
-    File,
     Directory,
+    File,
     Unknown
 };
 
@@ -59,7 +59,7 @@ struct FileInformation
     FileType fileType;
     FileAttribute fileAttr;
     std::time_t modifiedDate;
-    std::uintmax_t fileSize;
+    std::uintmax_t fileSize;  // DirectoryÀÇ °æ¿ì 0.
 };
 
 ///////////////////////////////////////////////////////////////////////////////

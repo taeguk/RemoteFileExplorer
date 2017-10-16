@@ -126,6 +126,7 @@ int FileExplorerService::GetDirectoryInfo(
             if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
                 fileInfo.fileType = FileType::Directory;
+                fileInfo.fileSize = 0;
             }
             else
             {

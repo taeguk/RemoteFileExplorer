@@ -5,6 +5,7 @@
 #include <shellapi.h>
 
 #include <cassert>
+#include <algorithm>
 #include <map>
 
 #include "MFC/Client/CClientDialog.h"
@@ -137,6 +138,8 @@ BEGIN_MESSAGE_MAP(CClientDialog, CDialogEx)
         &CClientDialog::OnTvnSelchangedTreeDirectory)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST_FILE,
         &CClientDialog::OnNMDblclkListFile)
+    ON_NOTIFY(HDN_ITEMCLICK, 0,
+        &CClientDialog::OnHdnItemclickListFile)
 END_MESSAGE_MAP()
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -292,6 +295,107 @@ void CClientDialog::OnNMDblclkListFile(NMHDR *pNMHDR, LRESULT *pResult)
             dirTreeControl_.SelectItem(fileTree->parent->parent->hTreeItem);
         }
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void CClientDialog::OnHdnItemclickListFile(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    *pResult = 0;
+
+    LPNMHEADER phdr = reinterpret_cast<LPNMHEADER>(pNMHDR);
+    ViewMode viewMode =
+        static_cast<ViewMode>(viewModeComboBox_.GetCurSel());
+
+    // Report 모드가 아니면 무시한다.
+    if (viewMode != ViewMode::Report)
+        return;
+
+    // 현재 File List View가 비워져 있으면 무시한다.
+    if (curDirTree_ == nullptr)
+        return;
+
+    int nColumn = phdr->iItem;
+
+    if (nColumn < 0 || nColumn > 3)
+        return;
+
+    fileListSortAscendFlags_[nColumn] = !fileListSortAscendFlags_[nColumn];
+
+    FileInformationCompare_ compare;
+
+    // 비교 함수를 만든다. (일단, 오름차순이라는 가정하에)
+    switch (nColumn)
+    {
+    case 0:  // Name
+        compare = [](const auto& f1, const auto& f2) -> int
+        {
+            return CString(f1.fileName.c_str()).CompareNoCase(f2.fileName.c_str());
+        };
+        break;
+    case 1:  // Modified Date
+        compare = [](const auto& f1, const auto& f2) -> int
+        {
+            if (f1.modifiedDate < f2.modifiedDate)
+                return -1;
+            else if (f1.modifiedDate > f2.modifiedDate)
+                return 1;
+            else
+                return 0;
+        };
+        break;
+    case 2:  // Type
+        compare = [](const auto& f1, const auto& f2) -> int
+        {
+            if (f1.fileType < f2.fileType)
+                return -1;
+            else if (f1.fileType > f2.fileType)
+                return 1;
+            else
+                return 0;
+        };
+        break;
+    case 3:  // Size
+        compare = [](const auto& f1, const auto& f2) -> int
+        {
+            if (f1.fileSize < f2.fileSize)
+                return -1;
+            else if (f1.fileSize > f2.fileSize)
+                return 1;
+            else
+                return 0;
+        };
+        break;
+    default:
+        assert(false);
+    }
+
+    // 내림차순으로 정렬해야 하는 경우, 위에서 만든 비교함수를 '뒤집는다'.
+    if (!fileListSortAscendFlags_[nColumn])
+    {
+        compare = [compare](const auto& f1, const auto& f2) -> int
+        {
+            return compare(f2, f1);
+        };
+    }
+
+    // Item들을 정렬한다.
+    fileListControl_.SortItems(&FileListCompareFunc_, (LPARAM) &compare);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/*static*/ int CALLBACK CClientDialog::FileListCompareFunc_(
+    LPARAM lParam1,
+    LPARAM lParam2,
+    LPARAM lParamSort)
+{
+    FileInformationCompare_* compare = (FileInformationCompare_*) lParamSort;
+
+    FileTree* fileTree1 = (FileTree*)lParam1;
+    FileTree* fileTree2 = (FileTree*)lParam2;
+
+    assert(fileTree1 != nullptr && fileTree2 != nullptr);
+
+    return (*compare)(fileTree1->f, fileTree2->f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -582,6 +686,11 @@ void CClientDialog::UpdateFileListView_()
         fileListControl_.InsertColumn(2, _T("Type"), LVCFMT_LEFT, 90);
         fileListControl_.InsertColumn(3, _T("Size"), LVCFMT_LEFT, 90);
         fileListControl_.SetImageList(smallFileImageList_, LVSIL_SMALL);
+
+        // 파일 이름은 처음에 이미 오름차순으로 정렬되있다.
+        fileListSortAscendFlags_[0] = true;
+        fileListSortAscendFlags_[1] = fileListSortAscendFlags_[2] =
+            fileListSortAscendFlags_[3] = false;
 
         int nItem = 0;
         for (const auto& childTree : curDirTree_->childs)

@@ -95,9 +95,22 @@ protected:
     afx_msg void OnTvnSelchangedTreeDirectory(NMHDR *pNMHDR, LRESULT *pResult);
     // File List View에서 더블클릭이 발생했을 때 호출되는 함수.
     afx_msg void OnNMDblclkListFile(NMHDR *pNMHDR, LRESULT *pResult);
+    // File List View가 Report모드일 때, header(column)을 클릭하면 호출되는 함수.
+    afx_msg void OnHdnItemclickListFile(NMHDR *pNMHDR, LRESULT *pResult);
 
 private:
     ///////////////////////////////////////////////////////////////////////////////
+    // File List View가 Report모드 일 때, sorting 기능을 위한 데이터타입과 함수.
+    using FileInformationCompare_ =
+        std::function<int(
+            const common::FileInformation&,
+            const common::FileInformation&)>;
+
+    static int CALLBACK FileListCompareFunc_(
+        LPARAM lParam1,
+        LPARAM lParam2,
+        LPARAM lParamSort);
+
     void ConnectToServer_();
     void DisconnectToServer_();
 
@@ -148,6 +161,9 @@ private:
     CImageList* bigFileImageList_;
     CImageList* mediumFileImageList_;
     CImageList* smallFileImageList_;
+    // File List View가 Report모드에서 sorting될 때,
+    //   오름차순과 내림차순중 어떤 거로 할지 결정할 때 사용.
+    bool fileListSortAscendFlags_[4];
 
     // 현재 File List View가 나타내고 있는 directory를 의미한다.
     FileTree* curDirTree_{ nullptr };
