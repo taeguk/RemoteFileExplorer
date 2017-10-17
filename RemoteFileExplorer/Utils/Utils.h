@@ -26,6 +26,8 @@ template <typename Functor>
 class RAIIWrapper
 {
 public:
+    static_assert(std::is_nothrow_destructible<Functor>::value, "");
+
     explicit RAIIWrapper(Functor&& functor)
         : functor_(std::move(functor))
     {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 
 namespace remoteFileExplorer
 {
@@ -26,6 +27,8 @@ inline int SerializeWithMemcpy(
     std::size_t& remainedBufferSize,
     const T& data)
 {
+    static_assert(std::is_pod<T>::value, "");
+
     if (remainedBufferSize < sizeof(data))
         return -1;
 
@@ -44,6 +47,8 @@ inline int DeserializeWithMemcpy(
     std::size_t& remainedBufferSize,
     T& data)
 {
+    static_assert(std::is_pod<T>::value, "");
+
     if (remainedBufferSize < sizeof(data))
         return -1;
 
