@@ -92,7 +92,7 @@ inline WSABUF& IOSendContext::GetUpdatedWsabufRef()
 /*static*/ inline IOSendContext& IOSendContext::TypeCastFrom(IOContext& ioContext)
 {
     assert(ioContext.GetType() == IOContextType::Send);
-    return reinterpret_cast<IOSendContext&>(ioContext);
+    return static_cast<IOSendContext&>(ioContext);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -148,7 +148,7 @@ inline WSABUF& IORecvContext::GetUpdatedWsabufRef()
 /*static*/ inline IORecvContext& IORecvContext::TypeCastFrom(IOContext& ioContext)
 {
     assert(ioContext.GetType() == IOContextType::Recv);
-    return reinterpret_cast<IORecvContext&>(ioContext);
+    return static_cast<IORecvContext&>(ioContext);
 }
 
 } // namespace network

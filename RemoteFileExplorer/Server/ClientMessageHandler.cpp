@@ -24,7 +24,7 @@ int HandleClientMessage(
         return -1;
 
     message::ClientMessage& clientMessage =
-        reinterpret_cast<message::ClientMessage&>(*message);
+        static_cast<message::ClientMessage&>(*message);
 
     // 클라이언트 메시지를 처리한다.
     std::unique_ptr<message::ServerMessage> serverMessage =

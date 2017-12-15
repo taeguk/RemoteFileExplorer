@@ -98,14 +98,14 @@ inline GetDirectoryInfoReply::GetDirectoryInfoReply(
 GetDirectoryInfoRequest::TypeCastFrom(Message& message)
 {
     assert(message.GetMessageFlag() == _MessageFlag);
-    return reinterpret_cast<GetDirectoryInfoRequest&>(message);
+    return static_cast<GetDirectoryInfoRequest&>(message);
 }
 
 /*static*/ inline GetDirectoryInfoReply&
 GetDirectoryInfoReply::TypeCastFrom(Message& message)
 {
     assert(message.GetMessageFlag() == _MessageFlag);
-    return reinterpret_cast<GetDirectoryInfoReply&>(message);
+    return static_cast<GetDirectoryInfoReply&>(message);
 }
 
 } // namespace message

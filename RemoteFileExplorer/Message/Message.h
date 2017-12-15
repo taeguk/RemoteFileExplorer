@@ -85,13 +85,13 @@ public:
 /*static*/ inline ClientMessage& ClientMessage::TypeCastFrom(Message& message)
 {
     assert(message.IsClientMessage());
-    return reinterpret_cast<ClientMessage&>(message);
+    return static_cast<ClientMessage&>(message);
 }
 
 /*static*/ inline ServerMessage& ServerMessage::TypeCastFrom(Message& message)
 {
     assert(message.IsServerMessage());
-    return reinterpret_cast<ServerMessage&>(message);
+    return static_cast<ServerMessage&>(message);
 }
 
 } // namespace message

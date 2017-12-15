@@ -83,14 +83,14 @@ inline GetLogicalDriveInfoReply::GetLogicalDriveInfoReply(
 GetLogicalDriveInfoRequest::TypeCastFrom(Message& message)
 {
     assert(message.GetMessageFlag() == _MessageFlag);
-    return reinterpret_cast<GetLogicalDriveInfoRequest&>(message);
+    return static_cast<GetLogicalDriveInfoRequest&>(message);
 }
 
 /*static*/ inline GetLogicalDriveInfoReply&
 GetLogicalDriveInfoReply::TypeCastFrom(Message& message)
 {
     assert(message.GetMessageFlag() == _MessageFlag);
-    return reinterpret_cast<GetLogicalDriveInfoReply&>(message);
+    return static_cast<GetLogicalDriveInfoReply&>(message);
 }
 
 } // namespace message
